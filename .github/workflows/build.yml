@@ -1,0 +1,74 @@
+name: Build RichmorConfig
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # lets you trigger manually from the Actions tab
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false      # one OS failing doesn't cancel the others
+      matrix:
+        include:
+          - os: windows-latest
+            arch: x64
+            out:  RichmorConfig-win64.exe
+          - os: windows-latest
+            arch: x86
+            out:  RichmorConfig-win32.exe
+          - os: ubuntu-latest
+            arch: x64
+            out:  RichmorConfig-linux
+          - os: macos-latest      # Apple Silicon runner
+            arch: arm64
+            out:  RichmorConfig-macos-arm64
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: ${{ matrix.arch }}
+
+      # ── native webview backends (pywebview needs a per-OS GUI backend) ──
+      - name: Linux WebKitGTK deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgirepository1.0-dev libcairo2-dev pkg-config \
+                                  gir1.2-gtk-3.0 gir1.2-webkit2-4.0
+
+      - name: Base deps
+        shell: bash
+        run: pip install aiohttp imageio-ffmpeg pyinstaller pywebview
+
+      - name: Windows backend (EdgeChromium/WebView2)
+        if: runner.os == 'Windows'
+        run: pip install pythonnet
+
+      - name: macOS backend (WKWebView)
+        if: runner.os == 'macOS'
+        run: pip install pyobjc-framework-WebKit
+
+      - name: Linux backend (WebKitGTK)
+        if: runner.os == 'Linux'
+        run: pip install pygobject
+
+      # ── build the one-file app (spec bundles HTML/JS/assets + ffmpeg) ──
+      - name: Build
+        run: pyinstaller richmor_config_app.spec --clean --noconfirm
+
+      - name: Rename output
+        shell: bash
+        run: |
+          cd dist
+          if [ -f RichmorConfig.exe ]; then mv RichmorConfig.exe "${{ matrix.out }}"
+          else mv RichmorConfig "${{ matrix.out }}"; fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.out }}
+          path: dist/${{ matrix.out }}

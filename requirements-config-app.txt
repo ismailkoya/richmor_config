@@ -1,0 +1,9 @@
+# Richmor MDVR CONFIG desktop app (richmor_config_app.py) — runtime + build deps
+aiohttp
+pywebview
+imageio-ffmpeg
+pyinstaller
+# Windows: pywebview pulls pythonnet automatically (EdgeChromium / WebView2 backend) -> real .exe
+# Linux:   also install system packages: python3-gi gir1.2-webkit2-4.0 gir1.2-gtk-3.0 (WebKitGTK).
+#          The built binary is a LINUX binary (not a .exe) and relies on the system WebKitGTK at runtime.
+# macOS:   pywebview pulls pyobjc automatically (WKWebView backend)

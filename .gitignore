@@ -1,0 +1,20 @@
+# This folder is a big working dir. Whitelist ONLY the files the build needs,
+# so `git add .` pushes a clean minimal repo (no pcaps, APK, docs, DB dumps, etc.).
+/*
+!/.gitignore
+!/.github/
+!/richmor_config_app.py
+!/richmor_config.py
+!/richmor_codec_native.py
+!/richmor_config.html
+!/richmor_codec_native.js
+!/richmor_codec_jt808.js
+!/richmor_codec_ttx.js
+!/requirements-config-app.txt
+!/richmor_config_app.spec
+!/git_release.bat
+!/setup_github.bat
+!/BUILD_CONFIG_APP.md
+!/assets/
+# inside assets/: keep the icon + logos, drop the "- Copy" duplicates
+assets/*- Copy*

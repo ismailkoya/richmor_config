@@ -1,0 +1,1982 @@
+{
+  "_meta": {
+    "languages": [
+      "en",
+      "fr",
+      "es",
+      "de",
+      "wo"
+    ]
+  },
+  "namespaces": {
+    "nav": {
+      "devices_map": {
+        "en": "Devices Map",
+        "fr": "Carte des appareils",
+        "es": "Mapa de dispositivos",
+        "de": "Gerätekarte",
+        "wo": "Kartu jumtukaay"
+      },
+      "devices_grid": {
+        "en": "Devices Grid",
+        "fr": "Grille des appareils",
+        "es": "Cuadrícula de dispositivos",
+        "de": "Geräteraster",
+        "wo": "Grilu jumtukaay"
+      },
+      "devices_config": {
+        "en": "Devices Config",
+        "fr": "Configuration des appareils",
+        "es": "Configuración de dispositivos",
+        "de": "Gerätekonfiguration",
+        "wo": "Konfigurasiyoŋ"
+      },
+      "device_commands": {
+        "en": "Device Commands",
+        "fr": "Commandes des appareils",
+        "es": "Comandos de dispositivos",
+        "de": "Gerätebefehle",
+        "wo": "Komandeyi jumtukaay"
+      },
+      "tasks": {
+        "en": "Tasks",
+        "fr": "Tâches",
+        "es": "Tareas",
+        "de": "Aufgaben",
+        "wo": "Liggéey"
+      },
+      "sim_cards": {
+        "en": "SIM Cards",
+        "fr": "Cartes SIM",
+        "es": "Tarjetas SIM",
+        "de": "SIM-Karten",
+        "wo": "Kart SIM"
+      },
+      "preferences": {
+        "en": "Preferences",
+        "fr": "Préférences",
+        "es": "Preferencias",
+        "de": "Einstellungen",
+        "wo": "Tànneef"
+      },
+      "help": {
+        "en": "Help",
+        "fr": "Aide",
+        "es": "Ayuda",
+        "de": "Hilfe",
+        "wo": "Ndimbal"
+      }
+    },
+    "help": {
+      "search": {
+        "en": "Search help",
+        "fr": "Rechercher dans l'aide",
+        "es": "Buscar en la ayuda",
+        "de": "Hilfe durchsuchen",
+        "wo": "Seet ci ndimbal"
+      }
+    },
+    "topbar": {
+      "fleetin": {
+        "en": "Fleet-in",
+        "fr": "Fleet-in",
+        "es": "Fleet-in",
+        "de": "Fleet-in",
+        "wo": "Fleet-in"
+      },
+      "logout": {
+        "en": "Log out",
+        "fr": "Déconnexion",
+        "es": "Cerrar sesión",
+        "de": "Abmelden",
+        "wo": "Génn"
+      }
+    },
+    "dash": {
+      "devices": {
+        "en": "Devices",
+        "fr": "Appareils",
+        "es": "Dispositivos",
+        "de": "Geräte",
+        "wo": "Jumtukaay"
+      },
+      "sim_cards": {
+        "en": "SIM Cards",
+        "fr": "Cartes SIM",
+        "es": "Tarjetas SIM",
+        "de": "SIM-Karten",
+        "wo": "Kart SIM"
+      },
+      "tasks": {
+        "en": "Tasks",
+        "fr": "Tâches",
+        "es": "Tareas",
+        "de": "Aufgaben",
+        "wo": "Liggéey"
+      },
+      "pending": {
+        "en": "Pending",
+        "fr": "En attente",
+        "es": "Pendiente",
+        "de": "Ausstehend",
+        "wo": "Di xaar"
+      },
+      "failed_24h": {
+        "en": "Failed 24h",
+        "fr": "Échecs 24h",
+        "es": "Fallidos 24h",
+        "de": "Fehler 24h",
+        "wo": "Antuwul 24h"
+      },
+      "dead": {
+        "en": "Dead",
+        "fr": "Inactif",
+        "es": "Inactivo",
+        "de": "Tot",
+        "wo": "Dee"
+      },
+      "proxy": {
+        "en": "Proxy",
+        "fr": "Proxy",
+        "es": "Proxy",
+        "de": "Proxy",
+        "wo": "Proxy"
+      },
+      "unit_cmds": {
+        "en": "cmds",
+        "fr": "cmd",
+        "es": "cmds",
+        "de": "Bef.",
+        "wo": "komand"
+      },
+      "unit_devs": {
+        "en": "devs",
+        "fr": "app.",
+        "es": "disp.",
+        "de": "Ger.",
+        "wo": "jumt."
+      }
+    },
+    "pref": {
+      "title": {
+        "en": "Preferences",
+        "fr": "Préférences",
+        "es": "Preferencias",
+        "de": "Einstellungen",
+        "wo": "Tànneef"
+      },
+      "language": {
+        "en": "Language",
+        "fr": "Langue",
+        "es": "Idioma",
+        "de": "Sprache",
+        "wo": "Làkk"
+      },
+      "language_sub": {
+        "en": "Choose your interface language.",
+        "fr": "Choisissez la langue de l'interface.",
+        "es": "Elige el idioma de la interfaz.",
+        "de": "Wählen Sie Ihre Sprache.",
+        "wo": "Tànnal sa làkk."
+      },
+      "theme": {
+        "en": "Theme",
+        "fr": "Thème",
+        "es": "Tema",
+        "de": "Design",
+        "wo": "Tema"
+      },
+      "theme_sub": {
+        "en": "Pick a color scheme. Saved automatically.",
+        "fr": "Choisissez un thème. Enregistré automatiquement.",
+        "es": "Elige un esquema de color. Se guarda automáticamente.",
+        "de": "Wählen Sie ein Farbschema. Automatisch gespeichert."
+      },
+      "dark": {
+        "en": "Dark",
+        "fr": "Sombre",
+        "es": "Oscuro",
+        "de": "Dunkel",
+        "wo": "Lëndëm"
+      },
+      "light": {
+        "en": "Light",
+        "fr": "Clair",
+        "es": "Claro",
+        "de": "Hell",
+        "wo": "Leer"
+      },
+      "solarized": {
+        "en": "Solarized",
+        "fr": "Solarized",
+        "es": "Solarized",
+        "de": "Solarized",
+        "wo": "Solarized"
+      },
+      "dracula": {
+        "en": "Dracula",
+        "fr": "Dracula",
+        "es": "Dracula",
+        "de": "Dracula",
+        "wo": "Dracula"
+      }
+    },
+    "grid_tab": {
+      "all": {
+        "en": "All",
+        "fr": "Tous",
+        "es": "Todos",
+        "de": "Alle",
+        "wo": "Lépp"
+      },
+      "online": {
+        "en": "Online",
+        "fr": "En ligne",
+        "es": "En línea",
+        "de": "Online",
+        "wo": "Ci kanam"
+      },
+      "offline": {
+        "en": "Offline",
+        "fr": "Hors ligne",
+        "es": "Desconectado",
+        "de": "Offline",
+        "wo": "Génn na"
+      },
+      "dead": {
+        "en": "Dead",
+        "fr": "Inactif",
+        "es": "Inactivo",
+        "de": "Tot",
+        "wo": "Dee"
+      },
+      "moving": {
+        "en": "Moving",
+        "fr": "En mouvement",
+        "es": "En movimiento",
+        "de": "In Bewegung",
+        "wo": "Dox"
+      },
+      "queued": {
+        "en": "Queued",
+        "fr": "En file",
+        "es": "En cola",
+        "de": "Warteschlange",
+        "wo": "Ci row"
+      }
+    },
+    "cmd_filter": {
+      "all": {
+        "en": "All",
+        "fr": "Tous",
+        "es": "Todos",
+        "de": "Alle",
+        "wo": "Lépp"
+      },
+      "pending": {
+        "en": "Pending",
+        "fr": "En attente",
+        "es": "Pendiente",
+        "de": "Ausstehend",
+        "wo": "Di xaar"
+      },
+      "completed": {
+        "en": "Completed",
+        "fr": "Terminé",
+        "es": "Completado",
+        "de": "Abgeschlossen",
+        "wo": "Jeex na"
+      },
+      "failed": {
+        "en": "Failed",
+        "fr": "Échec",
+        "es": "Fallido",
+        "de": "Fehlgeschlagen",
+        "wo": "Antuwul"
+      }
+    },
+    "common": {
+      "save": {
+        "en": "Save",
+        "fr": "Enregistrer",
+        "es": "Guardar",
+        "de": "Speichern",
+        "wo": "Denc"
+      },
+      "cancel": {
+        "en": "Cancel",
+        "fr": "Annuler",
+        "es": "Cancelar",
+        "de": "Abbrechen",
+        "wo": "Neenal"
+      },
+      "close": {
+        "en": "Close",
+        "fr": "Fermer",
+        "es": "Cerrar",
+        "de": "Schließen",
+        "wo": "Tëj"
+      },
+      "ok": {
+        "en": "OK",
+        "fr": "OK",
+        "es": "OK",
+        "de": "OK",
+        "wo": "OK"
+      },
+      "yes": {
+        "en": "Yes",
+        "fr": "Oui",
+        "es": "Sí",
+        "de": "Ja",
+        "wo": "Waaw"
+      },
+      "no": {
+        "en": "No",
+        "fr": "Non",
+        "es": "No",
+        "de": "Nein",
+        "wo": "Déedéet"
+      },
+      "delete": {
+        "en": "Delete",
+        "fr": "Supprimer",
+        "es": "Eliminar",
+        "de": "Löschen",
+        "wo": "Far"
+      },
+      "add": {
+        "en": "Add",
+        "fr": "Ajouter",
+        "es": "Añadir",
+        "de": "Hinzufügen",
+        "wo": "Yokk"
+      },
+      "import": {
+        "en": "Import",
+        "fr": "Importer",
+        "es": "Importar",
+        "de": "Importieren",
+        "wo": "Dugal"
+      },
+      "export": {
+        "en": "Export",
+        "fr": "Exporter",
+        "es": "Exportar",
+        "de": "Exportieren",
+        "wo": "Génne"
+      },
+      "search": {
+        "en": "Search",
+        "fr": "Rechercher",
+        "es": "Buscar",
+        "de": "Suchen",
+        "wo": "Seet"
+      }
+    },
+    "search": {
+      "devices": {
+        "en": "Search Devices",
+        "fr": "Rechercher des appareils",
+        "es": "Buscar dispositivos",
+        "de": "Geräte suchen",
+        "wo": "Seet jumtukaay"
+      },
+      "groups": {
+        "en": "Search Groups",
+        "fr": "Rechercher des groupes",
+        "es": "Buscar grupos",
+        "de": "Gruppen suchen",
+        "wo": "Seet kuréel"
+      },
+      "tasks": {
+        "en": "Search Tasks",
+        "fr": "Rechercher des tâches",
+        "es": "Buscar tareas",
+        "de": "Aufgaben suchen",
+        "wo": "Seet liggéey"
+      },
+      "sims": {
+        "en": "Search SIMs (IMSI / number / offer / plan)",
+        "fr": "Rechercher SIM (IMSI / numéro / offre / forfait)",
+        "es": "Buscar SIM (IMSI / número / oferta / plan)",
+        "de": "SIM suchen (IMSI / Nummer / Angebot / Tarif)",
+        "wo": "Seet SIM"
+      },
+      "commands": {
+        "en": "Search commands (param / value / response)",
+        "fr": "Rechercher commandes (param / valeur / réponse)",
+        "es": "Buscar comandos (parám / valor / respuesta)",
+        "de": "Befehle suchen (Param / Wert / Antwort)",
+        "wo": "Seet komand"
+      },
+      "device_imei_tabs": {
+        "en": "Search device / IMEI (all tabs)",
+        "fr": "Rechercher appareil / IMEI (tous)",
+        "es": "Buscar dispositivo / IMEI (todas)",
+        "de": "Gerät / IMEI suchen (alle)",
+        "wo": "Seet jumtukaay / IMEI"
+      },
+      "params": {
+        "en": "Search parameters (name / id / value)",
+        "fr": "Rechercher paramètres (nom / id / valeur)",
+        "es": "Buscar parámetros (nombre / id / valor)",
+        "de": "Parameter suchen (Name / ID / Wert)",
+        "wo": "Seet paramet"
+      }
+    },
+    "toast": {
+      "ggps_sent": {
+        "en": "Location SMS sent",
+        "fr": "SMS de localisation envoyé",
+        "es": "SMS de ubicación enviado",
+        "de": "Standort-SMS gesendet",
+        "wo": "SMS bu bërëb yónnee"
+      },
+      "sms_failed": {
+        "en": "SMS failed",
+        "fr": "Échec du SMS",
+        "es": "Error al enviar SMS",
+        "de": "SMS fehlgeschlagen",
+        "wo": "SMS bi antuwul"
+      },
+      "wrong_password": {
+        "en": "Wrong password",
+        "fr": "Mot de passe incorrect",
+        "es": "Contraseña incorrecta",
+        "de": "Falsches Passwort",
+        "wo": "Baat bu jubadi"
+      },
+      "task_created": {
+        "en": "Task created",
+        "fr": "Tâche créée",
+        "es": "Tarea creada",
+        "de": "Aufgabe erstellt",
+        "wo": "Liggéey sosu na"
+      },
+      "task_deleted": {
+        "en": "Task deleted",
+        "fr": "Tâche supprimée",
+        "es": "Tarea eliminada",
+        "de": "Aufgabe gelöscht",
+        "wo": "Liggéey far na"
+      },
+      "task_canceled": {
+        "en": "Task canceled",
+        "fr": "Tâche annulée",
+        "es": "Tarea cancelada",
+        "de": "Aufgabe abgebrochen",
+        "wo": "Liggéey neenal na"
+      },
+      "devices_saved": {
+        "en": "Devices saved",
+        "fr": "Appareils enregistrés",
+        "es": "Dispositivos guardados",
+        "de": "Geräte gespeichert",
+        "wo": "Jumtukaay denc na"
+      },
+      "baseline_saved": {
+        "en": "Baseline saved.",
+        "fr": "Référence enregistrée.",
+        "es": "Base guardada.",
+        "de": "Basis gespeichert.",
+        "wo": "Base denc na."
+      },
+      "sms_armed": {
+        "en": "SMS wakeup armed",
+        "fr": "Réveil SMS activé",
+        "es": "Activación SMS activada",
+        "de": "SMS-Weckruf aktiviert",
+        "wo": "Yee SMS jàll na"
+      },
+      "sms_cancelled": {
+        "en": "SMS wakeup cancelled",
+        "fr": "Réveil SMS annulé",
+        "es": "Activación SMS cancelada",
+        "de": "SMS-Weckruf abgebrochen",
+        "wo": "Yee SMS neenal na"
+      },
+      "nothing_selected": {
+        "en": "Nothing selected.",
+        "fr": "Rien de sélectionné.",
+        "es": "Nada seleccionado.",
+        "de": "Nichts ausgewählt.",
+        "wo": "Tànnuñu dara."
+      },
+      "select_one_device": {
+        "en": "Select at least one device",
+        "fr": "Sélectionnez au moins un appareil",
+        "es": "Selecciona al menos un dispositivo",
+        "de": "Mindestens ein Gerät wählen",
+        "wo": "Tànnal benn jumtukaay"
+      },
+      "select_one_param": {
+        "en": "Select at least one parameter",
+        "fr": "Sélectionnez au moins un paramètre",
+        "es": "Selecciona al menos un parámetro",
+        "de": "Mindestens einen Parameter wählen",
+        "wo": "Tànnal benn paramet"
+      },
+      "imei_digits": {
+        "en": "IMEI must be 10-20 digits.",
+        "fr": "L'IMEI doit comporter 10 à 20 chiffres.",
+        "es": "El IMEI debe tener 10-20 dígitos.",
+        "de": "IMEI muss 10-20 Ziffern haben.",
+        "wo": "IMEI war na am 10-20 chiffre."
+      },
+      "synced": {
+        "en": "Synced %n devices (%m from Fleet-in)",
+        "fr": "%n appareils synchronisés (%m depuis Fleet-in)",
+        "es": "%n dispositivos sincronizados (%m de Fleet-in)",
+        "de": "%n Geräte synchronisiert (%m von Fleet-in)",
+        "wo": "%n jumtukaay sync na (%m ci Fleet-in)"
+      },
+      "sync_failed": {
+        "en": "Sync failed",
+        "fr": "Échec de la synchronisation",
+        "es": "Error de sincronización",
+        "de": "Synchronisierung fehlgeschlagen",
+        "wo": "Sync antuwul"
+      },
+      "error": {
+        "en": "Error",
+        "fr": "Erreur",
+        "es": "Error",
+        "de": "Fehler",
+        "wo": "Njuumte"
+      },
+      "params_attached": {
+        "en": "%n params attached",
+        "fr": "%n paramètres ajoutés",
+        "es": "%n parámetros adjuntos",
+        "de": "%n Parameter angehängt",
+        "wo": "%n paramet yokk na"
+      },
+      "queued_n_cmds": {
+        "en": "Queued %n commands.",
+        "fr": "%n commandes en file.",
+        "es": "%n comandos en cola.",
+        "de": "%n Befehle eingereiht.",
+        "wo": "%n komand ci row."
+      },
+      "added_imei": {
+        "en": "Added %s",
+        "fr": "%s ajouté",
+        "es": "%s añadido",
+        "de": "%s hinzugefügt",
+        "wo": "%s yokk na"
+      },
+      "config_attached": {
+        "en": "Config attached - %n params in file",
+        "fr": "Config ajoutée - %n paramètres",
+        "es": "Config adjunta - %n parámetros",
+        "de": "Konfig angehängt - %n Parameter",
+        "wo": "Konfig yokk na - %n paramet"
+      },
+      "imported_summary": {
+        "en": "Imported - %a added, %u updated, %d deleted",
+        "fr": "Importé - %a ajoutés, %u mis à jour, %d supprimés",
+        "es": "Importado - %a añadidos, %u actualizados, %d eliminados",
+        "de": "Importiert - %a hinzugefügt, %u aktualisiert, %d gelöscht",
+        "wo": "Dugal na - %a yokk, %u yeesal, %d far"
+      },
+      "no_sim_delete": {
+        "en": "No SIM entries to delete",
+        "fr": "Aucune SIM à supprimer",
+        "es": "Ninguna SIM para eliminar",
+        "de": "Keine SIM zum Löschen",
+        "wo": "Amul SIM ngir far"
+      },
+      "deleted_n_sims": {
+        "en": "Deleted %n SIM entries",
+        "fr": "%n SIM supprimées",
+        "es": "%n SIM eliminadas",
+        "de": "%n SIM gelöscht",
+        "wo": "%n SIM far na"
+      },
+      "preview_failed": {
+        "en": "Preview failed",
+        "fr": "Échec de l'aperçu",
+        "es": "Error de vista previa",
+        "de": "Vorschau fehlgeschlagen",
+        "wo": "Preview antuwul"
+      },
+      "import_failed": {
+        "en": "Import failed",
+        "fr": "Échec de l'import",
+        "es": "Error de importación",
+        "de": "Import fehlgeschlagen",
+        "wo": "Import antuwul"
+      },
+      "delete_failed": {
+        "en": "Delete failed",
+        "fr": "Échec de la suppression",
+        "es": "Error al eliminar",
+        "de": "Löschen fehlgeschlagen",
+        "wo": "Far antuwul"
+      },
+      "parse_failed": {
+        "en": "Parse failed",
+        "fr": "Échec de l'analyse",
+        "es": "Error de análisis",
+        "de": "Analyse fehlgeschlagen",
+        "wo": "Parse antuwul"
+      },
+      "invalid_config": {
+        "en": "Invalid config",
+        "fr": "Config invalide",
+        "es": "Config inválida",
+        "de": "Ungültige Konfig",
+        "wo": "Konfig bu baaxul"
+      },
+      "fleetin_unreachable": {
+        "en": "Fleet-in unreachable",
+        "fr": "Fleet-in injoignable",
+        "es": "Fleet-in inaccesible",
+        "de": "Fleet-in nicht erreichbar",
+        "wo": "Fleet-in jotul"
+      },
+      "imported_dev": {
+        "en": "Imported - %a added, %u updated",
+        "fr": "Importé - %a ajoutés, %u mis à jour",
+        "es": "Importado - %a añadidos, %u actualizados",
+        "de": "Importiert - %a hinzugefügt, %u aktualisiert",
+        "wo": "Dugal na - %a yokk, %u yeesal"
+      }
+    },
+    "btn": {
+      "add_device": {
+        "en": "Add Device",
+        "fr": "Ajouter un appareil",
+        "es": "Añadir dispositivo",
+        "de": "Gerät hinzufügen",
+        "wo": "Yokk jumtukaay"
+      },
+      "import_devices": {
+        "en": "Import Devices",
+        "fr": "Importer des appareils",
+        "es": "Importar dispositivos",
+        "de": "Geräte importieren",
+        "wo": "Dugal jumtukaay"
+      },
+      "delete_all": {
+        "en": "Delete All",
+        "fr": "Tout supprimer",
+        "es": "Eliminar todo",
+        "de": "Alle löschen",
+        "wo": "Far lépp"
+      },
+      "choose_file": {
+        "en": "Choose file",
+        "fr": "Choisir un fichier",
+        "es": "Elegir archivo",
+        "de": "Datei wählen",
+        "wo": "Tànn fiise"
+      },
+      "select_all": {
+        "en": "Select All",
+        "fr": "Tout sélectionner",
+        "es": "Seleccionar todo",
+        "de": "Alle auswählen",
+        "wo": "Tànn lépp"
+      },
+      "unselect_all": {
+        "en": "Unselect All",
+        "fr": "Tout désélectionner",
+        "es": "Deseleccionar todo",
+        "de": "Alle abwählen",
+        "wo": "Bañ lépp"
+      },
+      "send_selected": {
+        "en": "Send Selected",
+        "fr": "Envoyer la sélection",
+        "es": "Enviar selección",
+        "de": "Auswahl senden",
+        "wo": "Yónni tànneef"
+      },
+      "remove": {
+        "en": "Remove",
+        "fr": "Retirer",
+        "es": "Quitar",
+        "de": "Entfernen",
+        "wo": "Dindi"
+      },
+      "add": {
+        "en": "Add",
+        "fr": "Ajouter",
+        "es": "Añadir",
+        "de": "Hinzufügen",
+        "wo": "Yokk"
+      }
+    },
+    "modal": {
+      "config_changes": {
+        "en": "Configuration changes",
+        "fr": "Modifications de configuration",
+        "es": "Cambios de configuración",
+        "de": "Konfigurationsänderungen",
+        "wo": "Coppite yi konfigurasiyoŋ"
+      },
+      "add_device": {
+        "en": "Add device",
+        "fr": "Ajouter un appareil",
+        "es": "Añadir dispositivo",
+        "de": "Gerät hinzufügen",
+        "wo": "Yokk jumtukaay"
+      },
+      "import_devices": {
+        "en": "Import devices",
+        "fr": "Importer des appareils",
+        "es": "Importar dispositivos",
+        "de": "Geräte importieren",
+        "wo": "Dugal jumtukaay"
+      },
+      "import_sims": {
+        "en": "Import SIM cards",
+        "fr": "Importer des cartes SIM",
+        "es": "Importar tarjetas SIM",
+        "de": "SIM-Karten importieren",
+        "wo": "Dugal kart SIM"
+      },
+      "select_devices": {
+        "en": "Select Devices",
+        "fr": "Sélectionner des appareils",
+        "es": "Seleccionar dispositivos",
+        "de": "Geräte auswählen",
+        "wo": "Tànn jumtukaay"
+      },
+      "select_params": {
+        "en": "Select parameters",
+        "fr": "Sélectionner des paramètres",
+        "es": "Seleccionar parámetros",
+        "de": "Parameter auswählen",
+        "wo": "Tànn paramet"
+      },
+      "new_task": {
+        "en": "New Task",
+        "fr": "Nouvelle tâche",
+        "es": "Nueva tarea",
+        "de": "Neue Aufgabe",
+        "wo": "Liggéey bu bees"
+      },
+      "duplicate_task": {
+        "en": "Duplicate Task",
+        "fr": "Dupliquer la tâche",
+        "es": "Duplicar tarea",
+        "de": "Aufgabe duplizieren",
+        "wo": "Defaraat liggéey"
+      },
+      "devices": {
+        "en": "Devices",
+        "fr": "Appareils",
+        "es": "Dispositivos",
+        "de": "Geräte",
+        "wo": "Jumtukaay"
+      }
+    },
+    "col": {
+      "param_id": {
+        "en": "Param ID",
+        "fr": "ID param",
+        "es": "ID parám",
+        "de": "Param-ID",
+        "wo": "ID paramet"
+      },
+      "param_name": {
+        "en": "Param Name",
+        "fr": "Nom param",
+        "es": "Nombre parám",
+        "de": "Param-Name",
+        "wo": "Tur paramet"
+      },
+      "old": {
+        "en": "Old",
+        "fr": "Ancien",
+        "es": "Anterior",
+        "de": "Alt",
+        "wo": "Jëkk"
+      },
+      "new": {
+        "en": "New",
+        "fr": "Nouveau",
+        "es": "Nuevo",
+        "de": "Neu",
+        "wo": "Bees"
+      }
+    },
+    "field": {
+      "imei_15": {
+        "en": "IMEI (15 digits)",
+        "fr": "IMEI (15 chiffres)",
+        "es": "IMEI (15 dígitos)",
+        "de": "IMEI (15 Ziffern)",
+        "wo": "IMEI (15 chiffre)"
+      },
+      "file_xlsx": {
+        "en": "File (.xlsx)",
+        "fr": "Fichier (.xlsx)",
+        "es": "Archivo (.xlsx)",
+        "de": "Datei (.xlsx)",
+        "wo": "Fiise (.xlsx)"
+      },
+      "provider": {
+        "en": "Provider",
+        "fr": "Opérateur",
+        "es": "Proveedor",
+        "de": "Anbieter",
+        "wo": "Opérateur"
+      },
+      "task_name": {
+        "en": "Task Name",
+        "fr": "Nom de la tâche",
+        "es": "Nombre de la tarea",
+        "de": "Aufgabenname",
+        "wo": "Tur liggéey"
+      },
+      "task_name_ph": {
+        "en": "(leave blank for default)",
+        "fr": "(laisser vide pour le défaut)",
+        "es": "(dejar vacío para el valor por defecto)",
+        "de": "(leer lassen für Standard)",
+        "wo": "(bàyyil ay ngir bu wér)"
+      },
+      "task_type": {
+        "en": "Task Type",
+        "fr": "Type de tâche",
+        "es": "Tipo de tarea",
+        "de": "Aufgabentyp",
+        "wo": "Xeet liggéey"
+      },
+      "no_file": {
+        "en": "No file selected",
+        "fr": "Aucun fichier sélectionné",
+        "es": "Ningún archivo seleccionado",
+        "de": "Keine Datei ausgewählt",
+        "wo": "Tànnuñu fiise"
+      },
+      "analyzing": {
+        "en": "Analyzing file…",
+        "fr": "Analyse du fichier…",
+        "es": "Analizando archivo…",
+        "de": "Datei wird analysiert…",
+        "wo": "Di seet fiise…"
+      },
+      "records_never_deleted": {
+        "en": "Records are never deleted.",
+        "fr": "Les enregistrements ne sont jamais supprimés.",
+        "es": "Los registros nunca se eliminan.",
+        "de": "Datensätze werden nie gelöscht.",
+        "wo": "Duñu far enregistrement yi mukk."
+      },
+      "available": {
+        "en": "Available",
+        "fr": "Disponibles",
+        "es": "Disponibles",
+        "de": "Verfügbar",
+        "wo": "Am na"
+      },
+      "selected": {
+        "en": "Selected",
+        "fr": "Sélectionnés",
+        "es": "Seleccionados",
+        "de": "Ausgewählt",
+        "wo": "Tànneef"
+      },
+      "providers": {
+        "en": "Providers",
+        "fr": "Opérateurs",
+        "es": "Proveedores",
+        "de": "Anbieter",
+        "wo": "Opérateur yi"
+      },
+      "device_status": {
+        "en": "Device Status",
+        "fr": "État de l'appareil",
+        "es": "Estado del dispositivo",
+        "de": "Gerätestatus",
+        "wo": "Doxiinu jumtukaay"
+      }
+    },
+    "imp": {
+      "no_imei_skipped": {
+        "en": "%n without IMEI (skipped)",
+        "fr": "%n sans IMEI (ignorés)",
+        "es": "%n sin IMEI (omitidos)",
+        "de": "%n ohne IMEI (übersprungen)",
+        "wo": "%n amul IMEI (jàllle)"
+      },
+      "add_new_devices": {
+        "en": "Add new devices",
+        "fr": "Ajouter les nouveaux appareils",
+        "es": "Añadir dispositivos nuevos",
+        "de": "Neue Geräte hinzufügen",
+        "wo": "Yokk jumtukaay yu bees"
+      },
+      "update_existing_devices": {
+        "en": "Update existing devices",
+        "fr": "Mettre à jour les appareils existants",
+        "es": "Actualizar dispositivos existentes",
+        "de": "Vorhandene Geräte aktualisieren",
+        "wo": "Yeesal jumtukaay yu am"
+      },
+      "add_new_records": {
+        "en": "Add new records",
+        "fr": "Ajouter les nouveaux enregistrements",
+        "es": "Añadir registros nuevos",
+        "de": "Neue Datensätze hinzufügen",
+        "wo": "Yokk enregistrement yu bees"
+      },
+      "update_changed_records": {
+        "en": "Update changed records",
+        "fr": "Mettre à jour les enregistrements modifiés",
+        "es": "Actualizar registros cambiados",
+        "de": "Geänderte Datensätze aktualisieren",
+        "wo": "Yeesal enregistrement yu coppite"
+      },
+      "delete_missing_records": {
+        "en": "Delete missing records",
+        "fr": "Supprimer les enregistrements manquants",
+        "es": "Eliminar registros faltantes",
+        "de": "Fehlende Datensätze löschen",
+        "wo": "Far enregistrement yu ñàkk"
+      }
+    },
+    "task_type": {
+      "write": {
+        "en": "Write Config",
+        "fr": "Écrire la config",
+        "es": "Escribir config",
+        "de": "Konfig schreiben",
+        "wo": "Bind konfig"
+      },
+      "read": {
+        "en": "Read Config",
+        "fr": "Lire la config",
+        "es": "Leer config",
+        "de": "Konfig lesen",
+        "wo": "Jàng konfig"
+      },
+      "baseline": {
+        "en": "Set Base Config",
+        "fr": "Définir la config de base",
+        "es": "Definir config base",
+        "de": "Basiskonfig setzen",
+        "wo": "Teg konfig bu base"
+      }
+    },
+    "vdev": {
+      "sms_wakeup": {
+        "en": "SMS Wakeup",
+        "fr": "Réveil SMS",
+        "es": "Activación SMS",
+        "de": "SMS-Weckruf",
+        "wo": "Yee SMS"
+      }
+    },
+    "login": {
+      "title": {
+        "en": "Teltonika FOTA",
+        "fr": "Teltonika FOTA",
+        "es": "Teltonika FOTA",
+        "de": "Teltonika FOTA",
+        "wo": "Teltonika FOTA"
+      },
+      "email": {
+        "en": "Email",
+        "fr": "E-mail",
+        "es": "Correo",
+        "de": "E-Mail",
+        "wo": "Email"
+      },
+      "password": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "es": "Contraseña",
+        "de": "Passwort",
+        "wo": "Baatu-jall"
+      },
+      "remember": {
+        "en": "Remember me",
+        "fr": "Se souvenir de moi",
+        "es": "Recordarme",
+        "de": "Angemeldet bleiben",
+        "wo": "Fàttaliku ma"
+      },
+      "sign_in": {
+        "en": "Sign in",
+        "fr": "Se connecter",
+        "es": "Iniciar sesión",
+        "de": "Anmelden",
+        "wo": "Dugg"
+      }
+    },
+    "conn": {
+      "connecting": {
+        "en": "Connecting…",
+        "fr": "Connexion…",
+        "es": "Conectando…",
+        "de": "Verbinden…",
+        "wo": "Di jokkoo…"
+      },
+      "connecting_state": {
+        "en": "connecting…",
+        "fr": "connexion…",
+        "es": "conectando…",
+        "de": "verbinden…",
+        "wo": "di jokkoo…"
+      }
+    },
+    "empty": {
+      "task_select": {
+        "en": "Select a task on the left, or create one with +.",
+        "fr": "Sélectionnez une tâche à gauche ou créez-en une avec +.",
+        "es": "Selecciona una tarea a la izquierda o crea una con +.",
+        "de": "Wählen Sie links eine Aufgabe oder erstellen Sie eine mit +.",
+        "wo": "Tànnal liggéey ci càmmooñ, walla bind benn ak +."
+      }
+    },
+    "tip": {
+      "add_by_imei": {
+        "en": "Add device by IMEI",
+        "fr": "Ajouter un appareil par IMEI",
+        "es": "Añadir dispositivo por IMEI",
+        "de": "Gerät per IMEI hinzufügen",
+        "wo": "Yokk jumtukaay ak IMEI"
+      },
+      "new_task": {
+        "en": "New task",
+        "fr": "Nouvelle tâche",
+        "es": "Nueva tarea",
+        "de": "Neue Aufgabe",
+        "wo": "Liggéey bu bees"
+      },
+      "fleetin": {
+        "en": "Pull names & groups from Fleet-in",
+        "fr": "Importer noms et groupes depuis Fleet-in",
+        "es": "Importar nombres y grupos de Fleet-in",
+        "de": "Namen & Gruppen von Fleet-in abrufen",
+        "wo": "Indi tur ak kuréel ci Fleet-in"
+      },
+      "logout": {
+        "en": "Log out",
+        "fr": "Déconnexion",
+        "es": "Cerrar sesión",
+        "de": "Abmelden",
+        "wo": "Génn"
+      }
+    },
+    "topbar2": {
+      "app_title": {
+        "en": "Teltonika FOTA Web",
+        "fr": "Teltonika FOTA Web",
+        "es": "Teltonika FOTA Web",
+        "de": "Teltonika FOTA Web",
+        "wo": "Teltonika FOTA Web"
+      }
+    },
+    "search2": {
+      "grid_devices": {
+        "en": "Search devices (name / IMEI / IMSI / number)",
+        "fr": "Rechercher appareils (nom / IMEI / IMSI / numéro)",
+        "es": "Buscar dispositivos (nombre / IMEI / IMSI / número)",
+        "de": "Geräte suchen (Name / IMEI / IMSI / Nummer)",
+        "wo": "Seet jumtukaay (tur / IMEI / IMSI / numero)"
+      },
+      "available": {
+        "en": "Search available",
+        "fr": "Rechercher disponibles",
+        "es": "Buscar disponibles",
+        "de": "Verfügbare suchen",
+        "wo": "Seet yu am"
+      },
+      "selected": {
+        "en": "Search selected",
+        "fr": "Rechercher sélectionnés",
+        "es": "Buscar seleccionados",
+        "de": "Ausgewählte suchen",
+        "wo": "Seet yu tànn"
+      },
+      "id_name_value": {
+        "en": "Search id / name / value",
+        "fr": "Rechercher id / nom / valeur",
+        "es": "Buscar id / nombre / valor",
+        "de": "ID / Name / Wert suchen",
+        "wo": "Seet id / tur / njëg"
+      }
+    },
+    "confirm": {
+      "no_imei": {
+        "en": "%n row(s) have no IMEI and will not be added. Continue?",
+        "fr": "%n ligne(s) sans IMEI ne seront pas ajoutées. Continuer ?",
+        "es": "%n fila(s) sin IMEI no se agregarán. ¿Continuar?",
+        "de": "%n Zeile(n) ohne IMEI werden nicht hinzugefügt. Fortfahren?",
+        "wo": "%n row yu amul IMEI duñu leen yokk. Kontine?"
+      },
+      "cancel_task": {
+        "en": "Cancel this task? Queued commands will be canceled.",
+        "fr": "Annuler cette tâche ? Les commandes en file seront annulées.",
+        "es": "¿Cancelar esta tarea? Los comandos en cola se cancelarán.",
+        "de": "Diese Aufgabe abbrechen? Eingereihte Befehle werden abgebrochen.",
+        "wo": "Neenal liggéey bi? Komand yi ci row dinañu neenal."
+      },
+      "base_config_single": {
+        "en": "Set base configuration\n\nThis replaces the stored configuration for this device. All parameter values currently on record — including values confirmed by prior read or write commands — are discarded and replaced with the values from the uploaded file. No commands are sent to the device; this updates server records only.\n\nContinue?",
+        "fr": "Définir la configuration de base\n\nCeci remplace la configuration enregistrée pour cet appareil. Toutes les valeurs de paramètres actuellement enregistrées — y compris celles confirmées par des commandes de lecture ou d'écriture antérieures — sont supprimées et remplacées par les valeurs du fichier téléversé. Aucune commande n'est envoyée à l'appareil ; ceci met à jour les enregistrements du serveur uniquement.\n\nContinuer ?",
+        "es": "Definir configuración base\n\nEsto reemplaza la configuración guardada de este dispositivo. Todos los valores de parámetros registrados — incluidos los confirmados por comandos de lectura o escritura previos — se descartan y se reemplazan con los valores del archivo subido. No se envían comandos al dispositivo; esto solo actualiza los registros del servidor.\n\n¿Continuar?",
+        "de": "Basiskonfiguration festlegen\n\nDies ersetzt die gespeicherte Konfiguration dieses Geräts. Alle erfassten Parameterwerte — einschließlich der durch frühere Lese- oder Schreibbefehle bestätigten — werden verworfen und durch die Werte der hochgeladenen Datei ersetzt. Es werden keine Befehle an das Gerät gesendet; nur die Serverdatensätze werden aktualisiert.\n\nFortfahren?",
+        "wo": "Teg konfigurasiyoŋ bu base\n\nLii dafay wuutu konfigurasiyoŋ bi nekk ci jumtukaay bii. Njëg yi paramet yépp — boole ci yu komand yu jàng walla bind jëkk firndeel — dañu leen di far te wuutu leen ak njëg yi ci fiise bi yeb. Duñu yónni benn komand ci jumtukaay bi; lii dafay yeesal enregistrement yu serwóor rekk.\n\nKontine?"
+      },
+      "base_config_task": {
+        "en": "Set base configuration\n\nThis replaces the stored configuration for %n device(s) with \"%s\". All parameter values on record — including values confirmed by prior read or write commands — are discarded and replaced with the values from the uploaded file. No commands are sent to the devices; this updates server records only.\n\nContinue?",
+        "fr": "Définir la configuration de base\n\nCeci remplace la configuration enregistrée pour %n appareil(s) par « %s ». Toutes les valeurs de paramètres enregistrées — y compris celles confirmées par des commandes de lecture ou d'écriture antérieures — sont supprimées et remplacées par les valeurs du fichier téléversé. Aucune commande n'est envoyée aux appareils ; ceci met à jour les enregistrements du serveur uniquement.\n\nContinuer ?",
+        "es": "Definir configuración base\n\nEsto reemplaza la configuración guardada de %n dispositivo(s) con «%s». Todos los valores de parámetros registrados — incluidos los confirmados por comandos de lectura o escritura previos — se descartan y se reemplazan con los valores del archivo subido. No se envían comandos a los dispositivos; esto solo actualiza los registros del servidor.\n\n¿Continuar?",
+        "de": "Basiskonfiguration festlegen\n\nDies ersetzt die gespeicherte Konfiguration für %n Gerät(e) durch „%s“. Alle erfassten Parameterwerte — einschließlich der durch frühere Lese- oder Schreibbefehle bestätigten — werden verworfen und durch die Werte der hochgeladenen Datei ersetzt. Es werden keine Befehle an die Geräte gesendet; nur die Serverdatensätze werden aktualisiert.\n\nFortfahren?",
+        "wo": "Teg konfigurasiyoŋ bu base\n\nLii dafay wuutu konfigurasiyoŋ bi nekk ngir %n jumtukaay ak « %s ». Njëg yi paramet yépp — boole ci yu komand yu jàng walla bind jëkk firndeel — dañu leen di far te wuutu leen ak njëg yi ci fiise bi yeb. Duñu yónni benn komand ci jumtukaay yi; lii dafay yeesal enregistrement yu serwóor rekk.\n\nKontine?"
+      }
+    },
+    "rel": {
+      "never": {
+        "en": "Never",
+        "fr": "Jamais",
+        "es": "Nunca",
+        "de": "Nie",
+        "wo": "Mukk"
+      },
+      "s_ago": {
+        "en": "%ns ago",
+        "fr": "il y a %ns",
+        "es": "hace %ns",
+        "de": "vor %ns",
+        "wo": "%ns ci ginnaaw"
+      },
+      "m_ago": {
+        "en": "%nm ago",
+        "fr": "il y a %nm",
+        "es": "hace %nm",
+        "de": "vor %nm",
+        "wo": "%nm ci ginnaaw"
+      },
+      "h_ago": {
+        "en": "%nh ago",
+        "fr": "il y a %nh",
+        "es": "hace %nh",
+        "de": "vor %nh",
+        "wo": "%nh ci ginnaaw"
+      },
+      "d_ago": {
+        "en": "%nd ago",
+        "fr": "il y a %nd",
+        "es": "hace %nd",
+        "de": "vor %nd",
+        "wo": "%nd ci ginnaaw"
+      }
+    }
+  },
+  "labels": {
+    "Getting started": {
+      "en": "Getting started",
+      "fr": "Prise en main",
+      "es": "Primeros pasos",
+      "de": "Erste Schritte",
+      "wo": "Tàmbali"
+    },
+    "Devices": {
+      "en": "Devices",
+      "fr": "Appareils",
+      "es": "Dispositivos",
+      "de": "Geräte",
+      "wo": "Jumtukaay yi"
+    },
+    "Config & commands": {
+      "en": "Config & commands",
+      "fr": "Config. et commandes",
+      "es": "Config. y comandos",
+      "de": "Konfig. & Befehle",
+      "wo": "Konfig ak komand"
+    },
+    "Tasks": {
+      "en": "Tasks",
+      "fr": "Tâches",
+      "es": "Tareas",
+      "de": "Aufgaben",
+      "wo": "Liggéey yi"
+    },
+    "SIM cards": {
+      "en": "SIM cards",
+      "fr": "Cartes SIM",
+      "es": "Tarjetas SIM",
+      "de": "SIM-Karten",
+      "wo": "Kart SIM yi"
+    },
+    "Preferences": {
+      "en": "Preferences",
+      "fr": "Préférences",
+      "es": "Preferencias",
+      "de": "Einstellungen",
+      "wo": "Tànneef"
+    },
+    "Queued": {
+      "en": "Queued",
+      "fr": "En file",
+      "es": "En cola",
+      "de": "Eingereiht",
+      "wo": "Ci row"
+    },
+    "Sent": {
+      "en": "Sent",
+      "fr": "Envoyé",
+      "es": "Enviado",
+      "de": "Gesendet",
+      "wo": "Yónni na"
+    },
+    "Status": {
+      "en": "Status",
+      "fr": "Statut",
+      "es": "Estado",
+      "de": "Status",
+      "wo": "Doxiin"
+    },
+    "Type": {
+      "en": "Type",
+      "fr": "Type",
+      "es": "Tipo",
+      "de": "Typ",
+      "wo": "Xeet"
+    },
+    "Param": {
+      "en": "Param",
+      "fr": "Param",
+      "es": "Parám",
+      "de": "Param",
+      "wo": "Paramet"
+    },
+    "Param Name": {
+      "en": "Param Name",
+      "fr": "Nom param",
+      "es": "Nombre parám",
+      "de": "Param-Name",
+      "wo": "Tur paramet"
+    },
+    "Old": {
+      "en": "Old",
+      "fr": "Ancien",
+      "es": "Anterior",
+      "de": "Alt",
+      "wo": "Jëkk"
+    },
+    "New": {
+      "en": "New",
+      "fr": "Nouveau",
+      "es": "Nuevo",
+      "de": "Neu",
+      "wo": "Bees"
+    },
+    "Response": {
+      "en": "Response",
+      "fr": "Réponse",
+      "es": "Respuesta",
+      "de": "Antwort",
+      "wo": "Tontu"
+    },
+    "Name": {
+      "en": "Name",
+      "fr": "Nom",
+      "es": "Nombre",
+      "de": "Name",
+      "wo": "Tur"
+    },
+    "IMEI": {
+      "en": "IMEI",
+      "fr": "IMEI",
+      "es": "IMEI",
+      "de": "IMEI",
+      "wo": "IMEI"
+    },
+    "Group": {
+      "en": "Group",
+      "fr": "Groupe",
+      "es": "Grupo",
+      "de": "Gruppe",
+      "wo": "Kuréel"
+    },
+    "Last Seen": {
+      "en": "Last Seen",
+      "fr": "Vu en dernier",
+      "es": "Visto por última vez",
+      "de": "Zuletzt gesehen",
+      "wo": "Gis bu mujj"
+    },
+    "Speed": {
+      "en": "Speed",
+      "fr": "Vitesse",
+      "es": "Velocidad",
+      "de": "Geschwindigkeit",
+      "wo": "Gaaw"
+    },
+    "PKTS": {
+      "en": "PKTS",
+      "fr": "PKTS",
+      "es": "PKTS",
+      "de": "PKTS",
+      "wo": "PKTS"
+    },
+    "Cmds": {
+      "en": "Cmds",
+      "fr": "Cmd",
+      "es": "Cmds",
+      "de": "Bef.",
+      "wo": "Komand"
+    },
+    "Config": {
+      "en": "Config",
+      "fr": "Config",
+      "es": "Config",
+      "de": "Konfig",
+      "wo": "Konfig"
+    },
+    "Firmware": {
+      "en": "Firmware",
+      "fr": "Firmware",
+      "es": "Firmware",
+      "de": "Firmware",
+      "wo": "Firmware"
+    },
+    "IMSI": {
+      "en": "IMSI",
+      "fr": "IMSI",
+      "es": "IMSI",
+      "de": "IMSI",
+      "wo": "IMSI"
+    },
+    "Mobile": {
+      "en": "Mobile",
+      "fr": "Mobile",
+      "es": "Móvil",
+      "de": "Mobil",
+      "wo": "Portaabal"
+    },
+    "Offer": {
+      "en": "Offer",
+      "fr": "Offre",
+      "es": "Oferta",
+      "de": "Angebot",
+      "wo": "Joxe"
+    },
+    "Engagement": {
+      "en": "Engagement",
+      "fr": "Engagement",
+      "es": "Compromiso",
+      "de": "Bindung",
+      "wo": "Ngëneel"
+    },
+    "Activated": {
+      "en": "Activated",
+      "fr": "Activé",
+      "es": "Activado",
+      "de": "Aktiviert",
+      "wo": "Jàll na"
+    },
+    "Amount": {
+      "en": "Amount",
+      "fr": "Montant",
+      "es": "Importe",
+      "de": "Betrag",
+      "wo": "Lim"
+    },
+    "MSISDN": {
+      "en": "MSISDN",
+      "fr": "MSISDN",
+      "es": "MSISDN",
+      "de": "MSISDN",
+      "wo": "MSISDN"
+    },
+    "State": {
+      "en": "State",
+      "fr": "État",
+      "es": "Estado",
+      "de": "Status",
+      "wo": "Doxiin"
+    },
+    "Range": {
+      "en": "Range",
+      "fr": "Gamme",
+      "es": "Gama",
+      "de": "Bereich",
+      "wo": "Wàll"
+    },
+    "Internet": {
+      "en": "Internet",
+      "fr": "Internet",
+      "es": "Internet",
+      "de": "Internet",
+      "wo": "Internet"
+    },
+    "Data Plan": {
+      "en": "Data Plan",
+      "fr": "Forfait data",
+      "es": "Plan de datos",
+      "de": "Datentarif",
+      "wo": "Forfait data"
+    },
+    "Linked IMEI": {
+      "en": "Linked IMEI",
+      "fr": "IMEI lié",
+      "es": "IMEI vinculado",
+      "de": "Verknüpfte IMEI",
+      "wo": "IMEI bu boole"
+    },
+    "pending": {
+      "en": "pending",
+      "fr": "en attente",
+      "es": "pendiente",
+      "de": "ausstehend",
+      "wo": "di xaar"
+    },
+    "queued": {
+      "en": "queued",
+      "fr": "en file",
+      "es": "en cola",
+      "de": "eingereiht",
+      "wo": "ci row"
+    },
+    "sent": {
+      "en": "sent",
+      "fr": "envoyé",
+      "es": "enviado",
+      "de": "gesendet",
+      "wo": "yónni na"
+    },
+    "complete": {
+      "en": "complete",
+      "fr": "terminé",
+      "es": "completado",
+      "de": "fertig",
+      "wo": "jeex na"
+    },
+    "failed": {
+      "en": "failed",
+      "fr": "échec",
+      "es": "fallido",
+      "de": "fehlgeschlagen",
+      "wo": "antuwul"
+    },
+    "timeout": {
+      "en": "timeout",
+      "fr": "expiré",
+      "es": "expirado",
+      "de": "Zeitüberschreitung",
+      "wo": "jeex na waxtu"
+    },
+    "canceled": {
+      "en": "canceled",
+      "fr": "annulé",
+      "es": "cancelado",
+      "de": "abgebrochen",
+      "wo": "neenal na"
+    },
+    "Read": {
+      "en": "Read",
+      "fr": "Lecture",
+      "es": "Lectura",
+      "de": "Lesen",
+      "wo": "Jàng"
+    },
+    "Base": {
+      "en": "Base",
+      "fr": "Base",
+      "es": "Base",
+      "de": "Basis",
+      "wo": "Base"
+    },
+    "Write": {
+      "en": "Write",
+      "fr": "Écriture",
+      "es": "Escritura",
+      "de": "Schreiben",
+      "wo": "Bind"
+    },
+    "All": {
+      "en": "All",
+      "fr": "Tous",
+      "es": "Todos",
+      "de": "Alle",
+      "wo": "Lépp"
+    },
+    "Online": {
+      "en": "Online",
+      "fr": "En ligne",
+      "es": "En línea",
+      "de": "Online",
+      "wo": "Ci kanam"
+    },
+    "Offline": {
+      "en": "Offline",
+      "fr": "Hors ligne",
+      "es": "Desconectado",
+      "de": "Offline",
+      "wo": "Génn na"
+    },
+    "Dead": {
+      "en": "Dead",
+      "fr": "Inactif",
+      "es": "Inactivo",
+      "de": "Tot",
+      "wo": "Dee"
+    },
+    "Moving": {
+      "en": "Moving",
+      "fr": "En mouvement",
+      "es": "En movimiento",
+      "de": "In Bewegung",
+      "wo": "Dox"
+    },
+    "No commands yet.": {
+      "en": "No commands yet.",
+      "fr": "Aucune commande pour l'instant.",
+      "es": "Aún no hay comandos.",
+      "de": "Noch keine Befehle.",
+      "wo": "Amul komand ba leegi."
+    },
+    "No matching commands.": {
+      "en": "No matching commands.",
+      "fr": "Aucune commande correspondante.",
+      "es": "No hay comandos coincidentes.",
+      "de": "Keine passenden Befehle.",
+      "wo": "Amul komand bu mengoo."
+    },
+    "No matching devices.": {
+      "en": "No matching devices.",
+      "fr": "Aucun appareil correspondant.",
+      "es": "No hay dispositivos coincidentes.",
+      "de": "Keine passenden Geräte.",
+      "wo": "Amul jumtukaay bu mengoo."
+    },
+    "Select a device on the left to see its commands.": {
+      "en": "Select a device on the left to see its commands.",
+      "fr": "Sélectionnez un appareil à gauche pour voir ses commandes.",
+      "es": "Selecciona un dispositivo a la izquierda para ver sus comandos.",
+      "de": "Wählen Sie links ein Gerät, um seine Befehle zu sehen.",
+      "wo": "Tànnal jumtukaay ci càmmooñ ngir gis komand yi."
+    },
+    "Select a device to view and manage its configuration.": {
+      "en": "Select a device to view and manage its configuration.",
+      "fr": "Sélectionnez un appareil pour voir et gérer sa configuration.",
+      "es": "Selecciona un dispositivo para ver y gestionar su configuración.",
+      "de": "Wählen Sie ein Gerät, um seine Konfiguration anzuzeigen und zu verwalten.",
+      "wo": "Tànnal jumtukaay ngir gis te saytu konfigurasiyoŋ bi."
+    },
+    "Select a device on the left to see its configuration.": {
+      "en": "Select a device on the left to see its configuration.",
+      "fr": "Sélectionnez un appareil à gauche pour voir sa configuration.",
+      "es": "Selecciona un dispositivo a la izquierda para ver su configuración.",
+      "de": "Wählen Sie links ein Gerät, um seine Konfiguration zu sehen.",
+      "wo": "Tànnal jumtukaay ci càmmooñ ngir gis konfigurasiyoŋ bi."
+    },
+    "All commands": {
+      "en": "All commands",
+      "fr": "Toutes les commandes",
+      "es": "Todos los comandos",
+      "de": "Alle Befehle",
+      "wo": "Komand yépp"
+    },
+    "Pending": {
+      "en": "Pending",
+      "fr": "En attente",
+      "es": "Pendiente",
+      "de": "Ausstehend",
+      "wo": "Di xaar"
+    },
+    "Completed": {
+      "en": "Completed",
+      "fr": "Terminé",
+      "es": "Completado",
+      "de": "Abgeschlossen",
+      "wo": "Jeex na"
+    },
+    "Failed": {
+      "en": "Failed",
+      "fr": "Échec",
+      "es": "Fallido",
+      "de": "Fehlgeschlagen",
+      "wo": "Antuwul"
+    },
+    "Started": {
+      "en": "Started",
+      "fr": "Démarré",
+      "es": "Iniciado",
+      "de": "Gestartet",
+      "wo": "Tàmbali na"
+    },
+    "Finished": {
+      "en": "Finished",
+      "fr": "Terminé le",
+      "es": "Finalizado",
+      "de": "Beendet",
+      "wo": "Jeex na"
+    },
+    "View Devices": {
+      "en": "View Devices",
+      "fr": "Voir les appareils",
+      "es": "Ver dispositivos",
+      "de": "Geräte anzeigen",
+      "wo": "Seet jumtukaay"
+    },
+    "SMS Wakeup": {
+      "en": "SMS Wakeup",
+      "fr": "Réveil SMS",
+      "es": "Activación SMS",
+      "de": "SMS-Weckruf",
+      "wo": "Yee SMS"
+    },
+    "SMS User": {
+      "en": "SMS User",
+      "fr": "Utilisateur SMS",
+      "es": "Usuario SMS",
+      "de": "SMS-Benutzer",
+      "wo": "Jëfandikukat SMS"
+    },
+    "SMS Pass": {
+      "en": "SMS Pass",
+      "fr": "Mot de passe SMS",
+      "es": "Contraseña SMS",
+      "de": "SMS-Passwort",
+      "wo": "Baat SMS"
+    },
+    "Set SMS": {
+      "en": "Set SMS",
+      "fr": "Définir SMS",
+      "es": "Definir SMS",
+      "de": "SMS setzen",
+      "wo": "Teg SMS"
+    },
+    "Cancel SMS": {
+      "en": "Cancel SMS",
+      "fr": "Annuler SMS",
+      "es": "Cancelar SMS",
+      "de": "SMS abbrechen",
+      "wo": "Neenal SMS"
+    },
+    "Duplicate": {
+      "en": "Duplicate",
+      "fr": "Dupliquer",
+      "es": "Duplicar",
+      "de": "Duplizieren",
+      "wo": "Defaraat"
+    },
+    "Start Task": {
+      "en": "Start Task",
+      "fr": "Démarrer la tâche",
+      "es": "Iniciar tarea",
+      "de": "Aufgabe starten",
+      "wo": "Tàmbali liggéey"
+    },
+    "Cancel Task": {
+      "en": "Cancel Task",
+      "fr": "Annuler la tâche",
+      "es": "Cancelar tarea",
+      "de": "Aufgabe abbrechen",
+      "wo": "Neenal liggéey"
+    },
+    "Delete Task": {
+      "en": "Delete Task",
+      "fr": "Supprimer la tâche",
+      "es": "Eliminar tarea",
+      "de": "Aufgabe löschen",
+      "wo": "Far liggéey"
+    },
+    "Select Devices": {
+      "en": "Select Devices",
+      "fr": "Sélectionner des appareils",
+      "es": "Seleccionar dispositivos",
+      "de": "Geräte auswählen",
+      "wo": "Tànn jumtukaay"
+    },
+    "Select Config": {
+      "en": "Select Config",
+      "fr": "Choisir la config",
+      "es": "Elegir config",
+      "de": "Konfig wählen",
+      "wo": "Tànn konfig"
+    },
+    "Upload Config": {
+      "en": "Upload Config",
+      "fr": "Téléverser la config",
+      "es": "Subir config",
+      "de": "Konfig hochladen",
+      "wo": "Yeb konfig"
+    },
+    "Base config:": {
+      "en": "Base config:",
+      "fr": "Config de base :",
+      "es": "Config base:",
+      "de": "Basiskonfig:",
+      "wo": "Konfig bu base:"
+    },
+    "Applied:": {
+      "en": "Applied:",
+      "fr": "Appliqué :",
+      "es": "Aplicado:",
+      "de": "Angewendet:",
+      "wo": "Jëfe na:"
+    },
+    "no file": {
+      "en": "no file",
+      "fr": "aucun fichier",
+      "es": "ningún archivo",
+      "de": "keine Datei",
+      "wo": "amul fiise"
+    },
+    "param(s)": {
+      "en": "param(s)",
+      "fr": "param(s)",
+      "es": "parám(s)",
+      "de": "Param.",
+      "wo": "paramet"
+    },
+    "device(s)": {
+      "en": "device(s)",
+      "fr": "appareil(s)",
+      "es": "dispositivo(s)",
+      "de": "Gerät(e)",
+      "wo": "jumtukaay"
+    },
+    "params": {
+      "en": "params",
+      "fr": "params",
+      "es": "parám",
+      "de": "Param.",
+      "wo": "paramet"
+    },
+    "Armed": {
+      "en": "Armed",
+      "fr": "Activé",
+      "es": "Activado",
+      "de": "Aktiviert",
+      "wo": "Jàll na"
+    },
+    "after": {
+      "en": "after",
+      "fr": "après",
+      "es": "después de",
+      "de": "nach",
+      "wo": "ginnaaw"
+    },
+    "min": {
+      "en": "min",
+      "fr": "min",
+      "es": "min",
+      "de": "Min.",
+      "wo": "min"
+    },
+    "hr": {
+      "en": "hr",
+      "fr": "h",
+      "es": "h",
+      "de": "Std",
+      "wo": "waxtu"
+    },
+    "No config file selected yet — use Upload Config.": {
+      "en": "No config file selected yet — use Upload Config.",
+      "fr": "Aucun fichier de config sélectionné — utilisez Téléverser la config.",
+      "es": "Aún no hay archivo de config — usa Subir config.",
+      "de": "Noch keine Konfigdatei gewählt — Konfig hochladen.",
+      "wo": "Tànnuñu fiise konfig — jëfandikoo Yeb konfig."
+    },
+    "Base Config": {
+      "en": "Base Config",
+      "fr": "Config de base",
+      "es": "Config base",
+      "de": "Basiskonfig",
+      "wo": "Konfig bu base"
+    },
+    "Download Config": {
+      "en": "Download Config",
+      "fr": "Télécharger la config",
+      "es": "Descargar config",
+      "de": "Konfig herunterladen",
+      "wo": "Telesarse konfig"
+    },
+    "No config file": {
+      "en": "No config file",
+      "fr": "Aucun fichier de config",
+      "es": "Ningún archivo de config",
+      "de": "Keine Konfigdatei",
+      "wo": "Amul fiise konfig"
+    },
+    "No configuration on file. Use \"Base Config\" to set one.": {
+      "en": "No configuration on file. Use \"Base Config\" to set one.",
+      "fr": "Aucune configuration enregistrée. Utilisez « Config de base » pour en définir une.",
+      "es": "No hay configuración guardada. Usa «Config base» para definir una.",
+      "de": "Keine Konfiguration vorhanden. Mit „Basiskonfig“ eine festlegen.",
+      "wo": "Amul konfigurasiyoŋ. Jëfandikoo «Konfig bu base» ngir teg benn."
+    },
+    "No parameters.": {
+      "en": "No parameters.",
+      "fr": "Aucun paramètre.",
+      "es": "Sin parámetros.",
+      "de": "Keine Parameter.",
+      "wo": "Amul paramet."
+    },
+    "ONLINE": {
+      "en": "ONLINE",
+      "fr": "EN LIGNE",
+      "es": "EN LÍNEA",
+      "de": "ONLINE",
+      "wo": "CI KANAM"
+    },
+    "OFFLINE": {
+      "en": "OFFLINE",
+      "fr": "HORS LIGNE",
+      "es": "DESCONECTADO",
+      "de": "OFFLINE",
+      "wo": "GÉNN NA"
+    },
+    "Direction": {
+      "en": "Direction",
+      "fr": "Direction",
+      "es": "Dirección",
+      "de": "Richtung",
+      "wo": "Jëm"
+    },
+    "Altitude": {
+      "en": "Altitude",
+      "fr": "Altitude",
+      "es": "Altitud",
+      "de": "Höhe",
+      "wo": "Kawe"
+    },
+    "Satellites": {
+      "en": "Satellites",
+      "fr": "Satellites",
+      "es": "Satélites",
+      "de": "Satelliten",
+      "wo": "Satelit"
+    },
+    "Mileage": {
+      "en": "Mileage",
+      "fr": "Kilométrage",
+      "es": "Kilometraje",
+      "de": "Kilometerstand",
+      "wo": "Kilomet"
+    },
+    "Last update": {
+      "en": "Last update",
+      "fr": "Dernière mise à jour",
+      "es": "Última actualización",
+      "de": "Letzte Aktualisierung",
+      "wo": "Yeesal bu mujj"
+    },
+    "Mobile Number": {
+      "en": "Mobile Number",
+      "fr": "Numéro mobile",
+      "es": "Número móvil",
+      "de": "Mobilnummer",
+      "wo": "Numero portaabal"
+    },
+    "Battery Voltage": {
+      "en": "Battery Voltage",
+      "fr": "Tension batterie",
+      "es": "Voltaje batería",
+      "de": "Batteriespannung",
+      "wo": "Tension bateri"
+    },
+    "Battery Level": {
+      "en": "Battery Level",
+      "fr": "Niveau batterie",
+      "es": "Nivel batería",
+      "de": "Batteriestand",
+      "wo": "Niwo bateri"
+    },
+    "GSM Signal": {
+      "en": "GSM Signal",
+      "fr": "Signal GSM",
+      "es": "Señal GSM",
+      "de": "GSM-Signal",
+      "wo": "Signaal GSM"
+    },
+    "Ignition": {
+      "en": "Ignition",
+      "fr": "Contact",
+      "es": "Encendido",
+      "de": "Zündung",
+      "wo": "Ignition"
+    },
+    "Movement": {
+      "en": "Movement",
+      "fr": "Mouvement",
+      "es": "Movimiento",
+      "de": "Bewegung",
+      "wo": "Dox"
+    },
+    "Lat / Lon": {
+      "en": "Lat / Lon",
+      "fr": "Lat / Lon",
+      "es": "Lat / Lon",
+      "de": "Lat / Lon",
+      "wo": "Lat / Lon"
+    },
+    "Event IO": {
+      "en": "Event IO",
+      "fr": "IO événement",
+      "es": "IO evento",
+      "de": "Ereignis-IO",
+      "wo": "IO xew"
+    },
+    "Extras": {
+      "en": "Extras",
+      "fr": "Extras",
+      "es": "Extras",
+      "de": "Extras",
+      "wo": "Yeneen"
+    },
+    "All IO Elements": {
+      "en": "All IO Elements",
+      "fr": "Tous les éléments IO",
+      "es": "Todos los elementos IO",
+      "de": "Alle IO-Elemente",
+      "wo": "IO yépp"
+    },
+    "Read Config": {
+      "en": "Read Config",
+      "fr": "Lire la config",
+      "es": "Leer config",
+      "de": "Konfig lesen",
+      "wo": "Jàng konfig"
+    },
+    "Write Config": {
+      "en": "Write Config",
+      "fr": "Écrire la config",
+      "es": "Escribir config",
+      "de": "Konfig schreiben",
+      "wo": "Bind konfig"
+    },
+    "Set Base Config": {
+      "en": "Set Base Config",
+      "fr": "Définir la config de base",
+      "es": "Definir config base",
+      "de": "Basiskonfig setzen",
+      "wo": "Teg konfig bu base"
+    },
+    "devices": {
+      "en": "devices",
+      "fr": "appareils",
+      "es": "dispositivos",
+      "de": "Geräte",
+      "wo": "jumtukaay"
+    },
+    "No config selected yet — use": {
+      "en": "No config selected yet — use",
+      "fr": "Aucune config sélectionnée — utilisez",
+      "es": "Aún no hay config — usa",
+      "de": "Noch keine Konfig gewählt — verwenden Sie",
+      "wo": "Tànnuñu konfig — jëfandikoo"
+    },
+    "Devices that do not respond for the defined period, this is used to wakeup offline devices by SMS to connect to server immediately": {
+      "en": "Devices that do not respond for the defined period, this is used to wakeup offline devices by SMS to connect to server immediately",
+      "fr": "Appareils qui ne répondent pas pendant la période définie ; utilisé pour réveiller par SMS les appareils hors ligne afin qu'ils se connectent immédiatement au serveur",
+      "es": "Dispositivos que no responden durante el período definido; se usa para despertar por SMS a los dispositivos desconectados y que se conecten de inmediato al servidor",
+      "de": "Geräte, die im festgelegten Zeitraum nicht antworten; wird verwendet, um Offline-Geräte per SMS zu wecken, damit sie sich sofort mit dem Server verbinden",
+      "wo": "Jumtukaay yi du tontu ci diir bi tëraloon; jëfandikoo ngir yee ak SMS jumtukaay yi génn ngir ñu jokkoo ak serwóor bi ci saa si"
+    }
+  }
+}
