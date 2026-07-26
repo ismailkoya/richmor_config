@@ -38,16 +38,23 @@ if errorlevel 1 (
 )
 
 echo.
-echo === [4/4] Downloading artifacts to .\downloads\ ===
-if exist downloads rmdir /s /q downloads
-gh run download !RUN_ID! --dir downloads
+echo === [4/4] Downloading artifacts to .\git_dist\ ===
+if exist git_dist rmdir /s /q git_dist
+gh run download !RUN_ID! --dir git_dist
 if errorlevel 1 ( echo Download failed. & pause & exit /b 1 )
+
+REM gh puts each artifact in its own subfolder — flatten so the binaries sit
+REM directly in git_dist\ (no folder-named-like-the-exe nesting).
+for /d %%d in ("git_dist\*") do (
+    for %%f in ("%%d\*") do move /y "%%f" "git_dist\" >nul
+    rmdir /s /q "%%d"
+)
 
 echo.
 echo ============================================================
-echo  Done. Binaries are in:  %CD%\downloads
+echo  Done. Binaries are in:  %CD%\git_dist
 echo ============================================================
-dir /b /s downloads
+dir /b git_dist
 echo.
 pause
 endlocal
