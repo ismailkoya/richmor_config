@@ -58,3 +58,19 @@ exe = EXE(
     entitlements_file=None,
     icon='assets/favicon.ico',
 )
+
+# On macOS, wrap the one-file binary in a proper .app bundle so users can double-click it
+# (a bare Mach-O binary would open in Terminal). The build workflow zips this .app.
+import sys as _sys
+if _sys.platform == 'darwin':
+    app = BUNDLE(
+        exe,
+        name='RichmorConfig.app',
+        icon=None,
+        bundle_identifier='com.globo360.richmorconfig',
+        info_plist={
+            'CFBundleName': 'Richmor MDVR Config',
+            'CFBundleDisplayName': 'Richmor MDVR Config',
+            'NSHighResolutionCapable': True,
+        },
+    )

@@ -55,10 +55,24 @@ def _res_dir():
 
 
 def _data_dir():
-    """Writable outputs (playbacks/, logs/). Beside the executable when frozen (persists across runs),
-    else the script folder — never inside the read-only bundle."""
+    """Where the app keeps its writable state (playbacks/, logs/, .webview/, richmor_config.log).
+
+    Packaged app: a per-user app-data folder so the .exe stays a clean single file with NOTHING
+    created next to it (Windows %LOCALAPPDATA%\\RichmorConfig, macOS ~/Library/Application Support/
+    RichmorConfig, Linux ~/.local/share/RichmorConfig). Running from source: this file's folder."""
     if getattr(sys, "frozen", False):
-        return os.path.dirname(os.path.abspath(sys.executable))
+        if sys.platform == "win32":
+            base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
+        elif sys.platform == "darwin":
+            base = os.path.expanduser("~/Library/Application Support")
+        else:
+            base = os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")
+        d = os.path.join(base, "RichmorConfig")
+        try:
+            os.makedirs(d, exist_ok=True)
+        except Exception:
+            d = os.path.dirname(os.path.abspath(sys.executable))   # fallback if app-data isn't writable
+        return d
     return os.path.dirname(os.path.abspath(__file__))
 
 

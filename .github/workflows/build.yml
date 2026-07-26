@@ -21,11 +21,11 @@ jobs:
             tag:  win32
           - os: ubuntu-latest
             arch: x64
-            out:  RichmorConfig-linux
+            out:  RichmorConfig-linux.deb        # double-click to install (pulls WebKitGTK)
             tag:  linux
           - os: macos-latest      # Apple Silicon runner
             arch: arm64
-            out:  RichmorConfig-macos-arm64
+            out:  RichmorConfig-macos-arm64.zip   # unzip -> drag .app to Applications -> double-click
             tag:  macos-arm64
 
     runs-on: ${{ matrix.os }}
@@ -65,12 +65,19 @@ jobs:
       - name: Build
         run: pyinstaller richmor_config_app.spec --clean --noconfirm
 
-      - name: Rename output
+      # ── package per OS so end users just double-click (no chmod, no terminal) ──
+      - name: Package Windows (.exe)
+        if: runner.os == 'Windows'
         shell: bash
-        run: |
-          cd dist
-          if [ -f RichmorConfig.exe ]; then mv RichmorConfig.exe "${{ matrix.out }}"
-          else mv RichmorConfig "${{ matrix.out }}"; fi
+        run: mv dist/RichmorConfig.exe "dist/${{ matrix.out }}"
+
+      - name: Package macOS (.app -> .zip)
+        if: runner.os == 'macOS'
+        run: cd dist && zip -r -y "${{ matrix.out }}" RichmorConfig.app
+
+      - name: Package Linux (.deb)
+        if: runner.os == 'Linux'
+        run: bash package_deb.sh "dist/${{ matrix.out }}"
 
       - uses: actions/upload-artifact@v4
         with:

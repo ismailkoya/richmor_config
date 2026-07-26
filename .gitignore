@@ -12,6 +12,7 @@
 !/richmor_codec_ttx.js
 !/requirements-config-app.txt
 !/richmor_config_app.spec
+!/package_deb.sh
 !/git_release.bat
 !/setup_github.bat
 !/BUILD_CONFIG_APP.md
