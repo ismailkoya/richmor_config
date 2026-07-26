@@ -14,15 +14,19 @@ jobs:
           - os: windows-latest
             arch: x64
             out:  RichmorConfig-win64.exe
+            tag:  win64
           - os: windows-latest
             arch: x86
             out:  RichmorConfig-win32.exe
+            tag:  win32
           - os: ubuntu-latest
             arch: x64
             out:  RichmorConfig-linux
+            tag:  linux
           - os: macos-latest      # Apple Silicon runner
             arch: arm64
             out:  RichmorConfig-macos-arm64
+            tag:  macos-arm64
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -55,7 +59,7 @@ jobs:
 
       - name: Linux backend (WebKitGTK)
         if: runner.os == 'Linux'
-        run: pip install pygobject
+        run: pip install "pygobject<3.50"   # 3.50+ needs girepository-2.0; <3.50 uses the 1.0 bindings we installed
 
       # ── build the one-file app (spec bundles HTML/JS/assets + ffmpeg) ──
       - name: Build
@@ -70,5 +74,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.out }}
+          name: ${{ matrix.tag }}
           path: dist/${{ matrix.out }}
