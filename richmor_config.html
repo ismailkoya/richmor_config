@@ -1429,6 +1429,7 @@ select option, select optgroup{background-color:#161616;color:#e6e6e6;}
 /* WiFi picker */
 .cfg-wifi-list{display:flex;flex-direction:column;gap:6px;height:230px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px;margin-bottom:16px;text-align:left;}
 .cfg-status{min-height:18px;}   /* reserve the status line so the modal height never jumps */
+.cfg-hint{margin-top:8px;font-size:12px;color:var(--text-muted);line-height:1.45;}
 .cfg-wifi-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:background .12s,border-color .12s;}
 .cfg-wifi-row:hover{background:var(--panel-2);}
 .cfg-wifi-row.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);}
@@ -1467,6 +1468,7 @@ select option, select optgroup{background-color:#161616;color:#e6e6e6;}
       <button class="cfg-btn primary" id="cfg-wifi-connect" onclick="wifiConnect()" data-i18n="wifi.connect_btn" disabled>Connect</button>
     </div>
     <div class="cfg-status" id="cfg-wifi-status"></div>
+    <div class="cfg-hint" id="cfg-wifi-hint" style="display:none"></div>
   </div>
 </div>
 
@@ -1544,7 +1546,7 @@ const I18N = {
   en: { nav:{live_data:'Live Data',live_stream:'Live Stream',playback:'Playback',settings:'Settings',logs:'Logs',prefs:'Preferences'},
         topbar:{title:'MDVR Config'},
         conn:{title:'Device disconnected',sub:'Reconnecting, please wait…'},
-        wifi:{connect_title:'Connect to the MDVR WiFi',password:'Password',connect_btn:'Connect',rescan:'Rescan',scanning:'Scanning for networks…',closed_title:'Device connection closed',waiting:'Waiting for the recorder to come back…',reconnect:'Reconnect WiFi'},
+        wifi:{connect_title:'Connect to the MDVR WiFi',password:'Password',connect_btn:'Connect',rescan:'Rescan',scanning:'Scanning for networks…',closed_title:'Device connection closed',waiting:'Waiting for the recorder to come back…',reconnect:'Reconnect WiFi',os_hint:'If the connection keeps failing, connect to this network from %s, then return to this window — it will continue automatically once the recorder is reachable.',os_win:'your Windows Wi-Fi settings',os_mac:'the macOS Wi-Fi menu',os_nix:'your system Wi-Fi settings'},
         dev:{search:'Search devices',none:'No devices connected',online:'Online',offline:'Offline'},
         live:{play_all:'Play all',stop_all:'Stop all',live:'LIVE',recording:'RECORDING',select:'Select a device first',
               capture:'Capture Photos',capturing:'Capturing…',nophoto:'No photo'},
@@ -1555,7 +1557,7 @@ const I18N = {
   fr: { nav:{live_data:'Données en direct',live_stream:'Flux en direct',playback:'Lecture',settings:'Paramètres',logs:'Journaux',prefs:'Préférences'},
         topbar:{title:'Configuration MDVR'},
         conn:{title:'Appareil déconnecté',sub:'Reconnexion, veuillez patienter…'},
-        wifi:{connect_title:'Se connecter au WiFi du MDVR',password:'Mot de passe',connect_btn:'Connecter',rescan:'Rescanner',scanning:'Recherche de réseaux…',closed_title:'Connexion à l’appareil fermée',waiting:'En attente du retour de l’enregistreur…',reconnect:'Reconnecter le WiFi'},
+        wifi:{connect_title:'Se connecter au WiFi du MDVR',password:'Mot de passe',connect_btn:'Connecter',rescan:'Rescanner',scanning:'Recherche de réseaux…',closed_title:'Connexion à l’appareil fermée',waiting:'En attente du retour de l’enregistreur…',reconnect:'Reconnecter le WiFi',os_hint:'Si la connexion échoue toujours, connectez-vous à ce réseau depuis %s, puis revenez à cette fenêtre — elle continuera automatiquement dès que l’enregistreur sera accessible.',os_win:'les paramètres Wi-Fi de Windows',os_mac:'le menu Wi-Fi de macOS',os_nix:'les paramètres Wi-Fi de votre système'},
         pref:{language:'Langue',language_sub:'Choisissez la langue de l’interface.',
               theme:'Thème',theme_sub:'Choisissez un thème de couleurs. Enregistré automatiquement.',
               dark:'Sombre',light:'Clair',solarized:'Solarized',dracula:'Dracula',
@@ -1563,7 +1565,7 @@ const I18N = {
   es: { nav:{live_data:'Datos en vivo',live_stream:'Transmisión en vivo',playback:'Reproducción',settings:'Ajustes',logs:'Registros',prefs:'Preferencias'},
         topbar:{title:'Configuración MDVR'},
         conn:{title:'Dispositivo desconectado',sub:'Reconectando, espere…'},
-        wifi:{connect_title:'Conectar al WiFi del MDVR',password:'Contraseña',connect_btn:'Conectar',rescan:'Reescanear',scanning:'Buscando redes…',closed_title:'Conexión con el dispositivo cerrada',waiting:'Esperando a que el grabador vuelva…',reconnect:'Reconectar WiFi'},
+        wifi:{connect_title:'Conectar al WiFi del MDVR',password:'Contraseña',connect_btn:'Conectar',rescan:'Reescanear',scanning:'Buscando redes…',closed_title:'Conexión con el dispositivo cerrada',waiting:'Esperando a que el grabador vuelva…',reconnect:'Reconectar WiFi',os_hint:'Si la conexión sigue fallando, conéctese a esta red desde %s y vuelva a esta ventana: continuará automáticamente cuando el grabador esté accesible.',os_win:'la configuración Wi-Fi de Windows',os_mac:'el menú Wi-Fi de macOS',os_nix:'la configuración Wi-Fi de su sistema'},
         pref:{language:'Idioma',language_sub:'Elige el idioma de la interfaz.',
               theme:'Tema',theme_sub:'Elige un esquema de color. Se guarda automáticamente.',
               dark:'Oscuro',light:'Claro',solarized:'Solarized',dracula:'Dracula',
@@ -1571,7 +1573,7 @@ const I18N = {
   de: { nav:{live_data:'Live-Daten',live_stream:'Live-Stream',playback:'Wiedergabe',settings:'Einstellungen',logs:'Protokolle',prefs:'Präferenzen'},
         topbar:{title:'MDVR-Konfiguration'},
         conn:{title:'Gerät getrennt',sub:'Verbindung wird wiederhergestellt…'},
-        wifi:{connect_title:'Mit dem MDVR-WLAN verbinden',password:'Passwort',connect_btn:'Verbinden',rescan:'Erneut suchen',scanning:'Suche nach Netzwerken…',closed_title:'Geräteverbindung geschlossen',waiting:'Warten auf den Rekorder…',reconnect:'WLAN neu verbinden'},
+        wifi:{connect_title:'Mit dem MDVR-WLAN verbinden',password:'Passwort',connect_btn:'Verbinden',rescan:'Erneut suchen',scanning:'Suche nach Netzwerken…',closed_title:'Geräteverbindung geschlossen',waiting:'Warten auf den Rekorder…',reconnect:'WLAN neu verbinden',os_hint:'Wenn die Verbindung weiterhin fehlschlägt, verbinden Sie sich mit diesem Netzwerk über %s und kehren Sie zu diesem Fenster zurück – es fährt automatisch fort, sobald der Rekorder erreichbar ist.',os_win:'die WLAN-Einstellungen von Windows',os_mac:'das WLAN-Menü von macOS',os_nix:'die WLAN-Einstellungen Ihres Systems'},
         pref:{language:'Sprache',language_sub:'Wählen Sie Ihre Oberflächensprache.',
               theme:'Design',theme_sub:'Wählen Sie ein Farbschema. Automatisch gespeichert.',
               dark:'Dunkel',light:'Hell',solarized:'Solarized',dracula:'Dracula',
@@ -1579,7 +1581,7 @@ const I18N = {
   wo: { nav:{live_data:'Dàta bu jamono',live_stream:'Wid bu jamono',playback:'Ndaje',settings:'Paramet',logs:'Journal',prefs:'Tànneef'},
         topbar:{title:'Konfigirasioŋ MDVR'},
         conn:{title:'Aparey dañu ko dagg',sub:'Ñu ngi jéemaat a jokkoo…'},
-        wifi:{connect_title:'Jokk ci WiFi MDVR bi',password:'Mot de passe',connect_btn:'Connecter',reconnect:'Jokkaat WiFi',waiting:'Di xaar enrejistrër bi mu dellusi…'},
+        wifi:{connect_title:'Jokk ci WiFi MDVR bi',password:'Mot de passe',connect_btn:'Connecter',reconnect:'Jokkaat WiFi',waiting:'Di xaar enrejistrër bi mu dellusi…',os_hint:'Bu jokk bi di antuwul, jokkal ci réso bi jaare ci %s, ba noppi dellusi ci palanteer bii — dina kontine boppam bu enrejistrër bi jàppandee.',os_win:'tëraliin WiFi bu Windows',os_mac:'menu WiFi bu macOS',os_nix:'tëraliin WiFi bu sa sistem'},
         pref:{language:'Làkk',language_sub:'Tannal làkku interfaas bi.',
               theme:'Melo',theme_sub:'Tannal melo. Mu koy denc ci saa si.',
               dark:'Lëndëm',light:'Leer',solarized:'Solarized',dracula:'Dracula',
@@ -1783,7 +1785,7 @@ function cfgWifiState(m){                                 // 'wifi' state messag
 function wifiSignalIcon(sig){ return sig>=75?'network_wifi':sig>=50?'network_wifi_3_bar':sig>=30?'network_wifi_2_bar':'network_wifi_1_bar'; }
 function wifiScan(){ _wifiScanned=true;
   const list=elMdvr('cfg-wifi-list'); if(list) list.innerHTML='<div class="cfg-wifi-empty">Scanning for networks…</div>';
-  cfgSetStatus(''); ctrlSend({action:'wifi_scan'}); }
+  cfgSetStatus(''); wifiShowHint(false); ctrlSend({action:'wifi_scan'}); }
 function wifiSyncConnectBtn(){ const c=elMdvr('cfg-wifi-connect'); if(c) c.disabled=(_wifiBusy || !_wifiSel); }
 function wifiRenderList(nets, target){
   const list=elMdvr('cfg-wifi-list'); if(!list) return;
@@ -1807,7 +1809,7 @@ function wifiConnect(){
   if(_wifiBusy) return;
   const ssid=_wifiSel; if(!ssid){ cfgSetStatus('Pick a network first.', true); return; }
   const pw=(elMdvr('cfg-wifi-pass')||{}).value||'';
-  _wifiBusy=true; cfgBtnBusy(true); cfgSetStatus('Connecting to '+ssid.trim()+'…');
+  _wifiBusy=true; cfgBtnBusy(true); cfgSetStatus('Connecting to '+ssid.trim()+'…'); wifiShowHint(false);
   if(!ctrlSend({action:'wifi_connect', ssid:ssid, password:pw})){ _wifiBusy=false; cfgBtnBusy(false); cfgSetStatus('Not connected to the config service.', true); }
 }
 function wifiReconnect(){                                  // "Reconnect WiFi": drop the link, reopen the picker
@@ -1815,9 +1817,15 @@ function wifiReconnect(){                                  // "Reconnect WiFi": 
   const s=elMdvr('cfg-dc-status'); if(s) s.textContent='Disconnecting WiFi…';
   if(!ctrlSend({action:'wifi_disconnect'})){ _wifiBusy=false; if(s) s.textContent=''; }
 }
+function wifiOsHint(){                                     // OS-aware "connect via your system Wi-Fi" line
+  var ua=(navigator.userAgent||'')+' '+(navigator.platform||'');
+  var k=/Win/i.test(ua)?'os_win':(/Mac/i.test(ua)?'os_mac':'os_nix');
+  return t('wifi.os_hint').replace('%s', t('wifi.'+k)); }
+function wifiShowHint(show){ var h=elMdvr('cfg-wifi-hint'); if(!h) return;
+  if(show){ h.textContent=wifiOsHint(); h.style.display=''; } else { h.style.display='none'; h.textContent=''; } }
 function wifiOnConnectResult(m){ _wifiBusy=false; cfgBtnBusy(false);
-  if(m.ok){ cfgSetStatus('Joined '+(m.ssid||'').trim()+' — waiting for the recorder…'); }
-  else{ cfgSetStatus(m.msg||'Connection failed. Check the password and try again.', true); } }
+  if(m.ok){ cfgSetStatus('Joined '+(m.ssid||'').trim()+' — waiting for the recorder…'); wifiShowHint(false); }
+  else{ cfgSetStatus(m.msg||'Connection failed. Check the password and try again.', true); wifiShowHint(true); } }
 function cfgSetStatus(txt, err){ const s=elMdvr('cfg-wifi-status'); if(!s) return; s.textContent=txt||''; s.classList.toggle('err', !!err); }
 function cfgBtnBusy(b){ const c=elMdvr('cfg-wifi-connect'), r=elMdvr('cfg-wifi-rescan');
   if(c){ c.disabled=b || !_wifiSel; c.textContent=b?'Connecting…':'Connect'; } if(r) r.disabled=b; }

@@ -977,37 +977,76 @@ async def _win_iface_state():
     return state, ssid
 
 
+_win_sec = {}    # ssid -> (authentication, encryption) exactly as netsh reports them
+
+
 async def _win_scan():
     rc, out = await _run("netsh", "wlan", "show", "networks", "mode=bssid", timeout=20)
     seen, cur = {}, None
     for line in out.splitlines():
         key = line.split(":", 1)[0].strip()
+        kl = key.lower()
         if re.match(r"SSID\s+\d+$", key):                    # "SSID 1", "SSID 2", ...  (block start)
             cur = _netsh_val(line)                           # keep exact spelling incl. trailing space
             if cur and cur not in seen:
-                seen[cur] = {"ssid": cur, "signal": 0, "secure": True}
+                seen[cur] = {"ssid": cur, "signal": 0, "secure": True, "auth": "", "enc": ""}
         elif cur:
-            m = re.search(r"(\d{1,3})\s*%", line)            # "Signal : 92%"  (label may be localized -> match the %)
-            if m:
-                s = int(m.group(1))
-                if s > seen[cur]["signal"]:
-                    seen[cur]["signal"] = s
+            if kl == "authentication" and not seen[cur]["auth"]:      # AP-advertised security
+                seen[cur]["auth"] = _netsh_val(line).strip()
+                seen[cur]["secure"] = "open" not in seen[cur]["auth"].lower()
+            elif kl == "encryption" and not seen[cur]["enc"]:
+                seen[cur]["enc"] = _netsh_val(line).strip()
+            else:
+                m = re.search(r"(\d{1,3})\s*%", line)        # "Signal : 92%"  (label may be localized -> match the %)
+                if m:
+                    s = int(m.group(1))
+                    if s > seen[cur]["signal"]:
+                        seen[cur]["signal"] = s
     nets = sorted((v for v in seen.values() if v["ssid"]), key=lambda x: -x["signal"])
-    log.info("WiFi(win): scan -> %s", ", ".join("%r@%d%%" % (n["ssid"], n["signal"]) for n in nets) or "(none)")
+    for n in nets:
+        _win_sec[n["ssid"]] = (n.get("auth", ""), n.get("enc", ""))
+    log.info("WiFi(win): scan -> %s", ", ".join(
+        "%r@%d%% [%s/%s]" % (n["ssid"], n["signal"], n.get("auth", ""), n.get("enc", "")) for n in nets) or "(none)")
     return nets
 
 
-def _win_profile_xml(ssid, password, label=None):
+def _win_sec_variants(ssid, password):
+    """WLAN-profile (authentication, encryption) pairs to try, derived from the AP's
+    advertised security when we scanned it, plus common fallbacks. Windows won't auto-
+    negotiate the cipher inside one profile the way Linux's wpa_supplicant does, so if the
+    AP is (say) WPA2/TKIP our old AES-only profile silently fails to associate."""
+    if not password:
+        return [("open", "none")]
+    auth = enc = ""
+    for k in (ssid, ssid.rstrip(), ssid.strip()):
+        if k in _win_sec:
+            auth, enc = _win_sec[k]
+            break
+    a, e = auth.lower(), enc.lower()
+    if a and "open" in a:
+        return [("open", "none")]
+    out = []
+    if a or e:                                                # the AP's own advertised pair first
+        authn = "WPAPSK" if ("wpa" in a and "wpa2" not in a) else "WPA2PSK"
+        encn = "TKIP" if "tkip" in e else "AES"
+        out.append((authn, encn))
+    for v in (("WPA2PSK", "AES"), ("WPA2PSK", "TKIP"), ("WPAPSK", "TKIP")):
+        if v not in out:
+            out.append(v)
+    return out
+
+
+def _win_profile_xml(ssid, password, label=None, authn="WPA2PSK", encn="AES"):
     """`label` = the profile NAME that `add`/`connect` match on. Windows trims trailing
     whitespace when it stores the name, so pass a TRIMMED label. `ssid` = the exact bytes
-    to match the radio (may keep a trailing space). Decoupling them lets the profile name
-    match on connect AND the <hex> SSID hit the actual access point."""
+    to match the radio (may keep a trailing space). `authn`/`encn` = the WLAN-profile
+    security to write. Decoupling name/hex/security lets each be matched independently."""
     from xml.sax.saxutils import escape
     lbl = escape(label if label is not None else ssid)
     hexssid = ssid.encode("utf-8").hex().upper()             # exact SSID bytes -> radio match
-    if password:
-        sec = ("<security><authEncryption><authentication>WPA2PSK</authentication>"
-               "<encryption>AES</encryption><useOneX>false</useOneX></authEncryption>"
+    if password and authn != "open":
+        sec = (f"<security><authEncryption><authentication>{authn}</authentication>"
+               f"<encryption>{encn}</encryption><useOneX>false</useOneX></authEncryption>"
                "<sharedKey><keyType>passPhrase</keyType><protected>false</protected>"
                f"<keyMaterial>{escape(password)}</keyMaterial></sharedKey></security>")
     else:
@@ -1021,17 +1060,18 @@ def _win_profile_xml(ssid, password, label=None):
             f'<MSM>{sec}</MSM></WLANProfile>')
 
 
-async def _win_connect_one(ssid, password, label):
+async def _win_connect_one(ssid, password, label, authn="WPA2PSK", encn="AES"):
     """One add-profile + connect attempt. The profile NAME (add + connect) is `label`
     (trimmed, so Windows' trimmed lookup matches); the radio is matched by the exact
-    `ssid` bytes in the <hex> SSID."""
+    `ssid` bytes in the <hex> SSID; security is `authn`/`encn`."""
     hexssid = ssid.encode("utf-8").hex().upper()
-    log.info("WiFi(win): attempt ssid=%r hex=%s name=%r pw_len=%d", ssid, hexssid, label, len(password or ""))
+    log.info("WiFi(win): attempt ssid=%r hex=%s name=%r sec=%s/%s pw_len=%d",
+             ssid, hexssid, label, authn, encn, len(password or ""))
     path = None
     try:
         fd, path = tempfile.mkstemp(suffix=".xml", prefix="rmdvr_")
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            f.write(_win_profile_xml(ssid, password, label))
+            f.write(_win_profile_xml(ssid, password, label, authn, encn))
         rc, out = await _run("netsh", "wlan", "add", "profile",
                              "filename=" + path, "user=current", timeout=15)
         log.info("WiFi(win): add profile rc=%s -> %s", rc, " | ".join(out.split()) or "(no output)")
@@ -1074,13 +1114,17 @@ async def _win_connect(ssid, password):
         if r not in seen:
             seen.add(r)
             radios.append(r)
-    log.info("WiFi(win): connect plan label=%r radios=%r", label, radios)
+    secs = _win_sec_variants(ssid, password)
+    # (security, hex) matrix — advertised security first, both SSID spellings; capped so a
+    # fully-failing connect doesn't hang forever.
+    attempts = [(a, e, r) for (a, e) in secs for r in radios][:4]
+    log.info("WiFi(win): connect plan label=%r radios=%r secs=%r", label, radios, secs)
     ok, msg = False, "connect failed"
-    for r in radios:
-        ok, msg = await _win_connect_one(r, password, label)
+    for authn, encn, r in attempts:
+        ok, msg = await _win_connect_one(r, password, label, authn, encn)
         if ok:
             return True, msg
-        log.info("WiFi(win): candidate %r failed: %s", r, msg)
+        log.info("WiFi(win): candidate hex=%r sec=%s/%s failed: %s", r, authn, encn, msg)
     return ok, msg
 
 
