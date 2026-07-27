@@ -762,11 +762,20 @@ async def _route(msgid: int, serial: int, body: bytes):
 _wifi_cur = ""            # last-known joined SSID ("" = not on any WiFi)
 
 
+_NO_WINDOW = 0x08000000 if _IS_WIN else 0   # subprocess.CREATE_NO_WINDOW — hide the console
+
+
 async def _run(*args, timeout=25):
-    """Run a command, return (rc, stdout). Never raises."""
+    """Run a command, return (rc, stdout). Never raises.
+
+    On Windows the packaged app is windowed (no console), so every child process
+    (netsh, ffmpeg, …) would otherwise flash its own black console window. The WiFi
+    monitor polls `netsh wlan show interfaces` on a timer, so that flash appears
+    every few seconds. CREATE_NO_WINDOW suppresses it."""
     try:
         p = await asyncio.create_subprocess_exec(
-            *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+            *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
+            creationflags=_NO_WINDOW)
         out, _ = await asyncio.wait_for(p.communicate(), timeout=timeout)
         return p.returncode, (out or b"").decode("utf-8", "ignore")
     except Exception as e:
@@ -991,7 +1000,9 @@ def _win_profile_xml(ssid, password):
             f'<MSM>{sec}</MSM></WLANProfile>')
 
 
-async def _win_connect(ssid, password):
+async def _win_connect_one(ssid, password):
+    """One add-profile + connect attempt. The profile <name>, the <hex> SSID and the
+    connect name= all use the SAME spelling, so Windows' (trimmed) profile lookup matches."""
     path = None
     try:
         fd, path = tempfile.mkstemp(suffix=".xml", prefix="rmdvr_")
@@ -1015,6 +1026,23 @@ async def _win_connect(ssid, password):
         if (await _win_current_ssid()).strip() == ssid.strip():
             return True, "connected"
     return False, "could not associate — check the password"
+
+
+async def _win_connect(ssid, password):
+    # netsh is a TWO-step flow: `add profile` (Windows stores it under a name with trailing
+    # whitespace TRIMMED) then `connect name=<profile>` (looked up WITHOUT trimming) — so a
+    # scanned SSID carrying a trailing space fails with `no profile "X " assigned`. The radio
+    # itself is matched by the <hex> SSID. Linux's nmcli connects in ONE step so it never hits
+    # this. Be robust either way: try the SSID exactly as scanned, then retry trimmed.
+    cands = [ssid]
+    if ssid.rstrip() != ssid:
+        cands.append(ssid.rstrip())
+    ok, msg = False, "connect failed"
+    for c in cands:
+        ok, msg = await _win_connect_one(c, password)
+        if ok:
+            return True, msg
+    return ok, msg
 
 
 async def _win_disconnect():

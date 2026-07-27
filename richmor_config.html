@@ -1427,7 +1427,8 @@ select option, select optgroup{background-color:#161616;color:#e6e6e6;}
 .cfg-spin{animation:cfgSpin 1s linear infinite;}
 @keyframes cfgSpin{to{transform:rotate(360deg);}}
 /* WiFi picker */
-.cfg-wifi-list{display:flex;flex-direction:column;gap:6px;max-height:230px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px;margin-bottom:16px;text-align:left;}
+.cfg-wifi-list{display:flex;flex-direction:column;gap:6px;height:230px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px;margin-bottom:16px;text-align:left;}
+.cfg-status{min-height:18px;}   /* reserve the status line so the modal height never jumps */
 .cfg-wifi-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:background .12s,border-color .12s;}
 .cfg-wifi-row:hover{background:var(--panel-2);}
 .cfg-wifi-row.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);}
@@ -1453,7 +1454,7 @@ select option, select optgroup{background-color:#161616;color:#e6e6e6;}
   <div class="cfg-connect-card">
     <img src="assets/globo360_logo_dark.png" alt="Globo360" class="cfg-connect-logo" onerror="this.style.display='none'">
     <div class="cfg-connect-h1" data-i18n="wifi.connect_title">Connect to the MDVR WiFi</div>
-    <div class="cfg-connect-sub">Pick the recorder's network (<b id="cfg-tgt" style="color:var(--accent)">R-MDVR</b>) and press Connect. The page continues automatically once the recorder is reachable.</div>
+    <div class="cfg-connect-sub">Select your recorder's Wi-Fi network and press Connect. The page continues automatically once the recorder is reachable.</div>
     <div class="cfg-wifi-list" id="cfg-wifi-list">
       <div class="cfg-wifi-empty" data-i18n="wifi.scanning">Scanning for networks…</div>
     </div>
@@ -1463,7 +1464,7 @@ select option, select optgroup{background-color:#161616;color:#e6e6e6;}
     </div>
     <div class="cfg-btn-row">
       <button class="cfg-btn ghost" id="cfg-wifi-rescan" onclick="wifiScan()" title="Rescan" data-i18n-title="wifi.rescan"><span class="mi" style="font-size:18px;vertical-align:-3px">refresh</span></button>
-      <button class="cfg-btn primary" id="cfg-wifi-connect" onclick="wifiConnect()" data-i18n="wifi.connect_btn">Connect</button>
+      <button class="cfg-btn primary" id="cfg-wifi-connect" onclick="wifiConnect()" data-i18n="wifi.connect_btn" disabled>Connect</button>
     </div>
     <div class="cfg-status" id="cfg-wifi-status"></div>
   </div>
@@ -1783,27 +1784,25 @@ function wifiSignalIcon(sig){ return sig>=75?'network_wifi':sig>=50?'network_wif
 function wifiScan(){ _wifiScanned=true;
   const list=elMdvr('cfg-wifi-list'); if(list) list.innerHTML='<div class="cfg-wifi-empty">Scanning for networks…</div>';
   cfgSetStatus(''); ctrlSend({action:'wifi_scan'}); }
+function wifiSyncConnectBtn(){ const c=elMdvr('cfg-wifi-connect'); if(c) c.disabled=(_wifiBusy || !_wifiSel); }
 function wifiRenderList(nets, target){
   const list=elMdvr('cfg-wifi-list'); if(!list) return;
   nets=(nets||[]).slice();
-  const tgt=(target||_wifiTarget||'').trim();
-  // always make the recorder AP selectable, even if the scan missed it (e.g. macOS scan limits)
-  if(tgt && !nets.some(n=>n.ssid.trim()===tgt)) nets.unshift({ssid:(target||_wifiTarget), signal:0, secure:true});
-  if(!nets.length){ list.innerHTML='<div class="cfg-wifi-empty">No networks found. Make sure the recorder is powered on, then Rescan.</div>'; return; }
-  // put the recorder's own AP on top if present
-  nets.sort((a,b)=>((b.ssid.trim()===tgt)-(a.ssid.trim()===tgt)) || (b.signal-a.signal));
-  if(_wifiSel==null){ const hit=nets.find(n=>n.ssid.trim()===tgt); if(hit) _wifiSel=hit.ssid; }
+  if(!nets.length){ list.innerHTML='<div class="cfg-wifi-empty">No networks found. Make sure the recorder is powered on, then Rescan.</div>'; wifiSyncConnectBtn(); return; }
+  nets.sort((a,b)=>(b.signal-a.signal));                          // just strongest-first — plain Wi-Fi list
+  if(_wifiSel!=null && !nets.some(n=>n.ssid===_wifiSel)) _wifiSel=null;   // drop a selection that vanished
   list.innerHTML = nets.map(n=>{
-    const isT=n.ssid.trim()===tgt, sel=n.ssid===_wifiSel?' sel':'';
+    const sel=n.ssid===_wifiSel?' sel':'';
     return `<div class="cfg-wifi-row${sel}" onclick="wifiPick(this,${JSON.stringify(n.ssid).replace(/"/g,'&quot;')})">
       <span class="mi">${n.secure?'lock':'lock_open'}</span>
-      <span class="name">${esc(n.ssid)}${isT?'<span class="tgt">recorder</span>':''}</span>
+      <span class="name">${esc(n.ssid)}</span>
       <span class="mi">${wifiSignalIcon(n.signal)}</span><span class="sig">${n.signal}%</span></div>`;
   }).join('');
+  wifiSyncConnectBtn();
 }
 function wifiPick(row, ssid){ _wifiSel=ssid;
   document.querySelectorAll('#cfg-wifi-list .cfg-wifi-row').forEach(r=>r.classList.remove('sel'));
-  if(row) row.classList.add('sel'); cfgSetStatus(''); }
+  if(row) row.classList.add('sel'); cfgSetStatus(''); wifiSyncConnectBtn(); }
 function wifiConnect(){
   if(_wifiBusy) return;
   const ssid=_wifiSel; if(!ssid){ cfgSetStatus('Pick a network first.', true); return; }
@@ -1821,7 +1820,7 @@ function wifiOnConnectResult(m){ _wifiBusy=false; cfgBtnBusy(false);
   else{ cfgSetStatus(m.msg||'Connection failed. Check the password and try again.', true); } }
 function cfgSetStatus(txt, err){ const s=elMdvr('cfg-wifi-status'); if(!s) return; s.textContent=txt||''; s.classList.toggle('err', !!err); }
 function cfgBtnBusy(b){ const c=elMdvr('cfg-wifi-connect'), r=elMdvr('cfg-wifi-rescan');
-  if(c){ c.disabled=b; c.textContent=b?'Connecting…':'Connect'; } if(r) r.disabled=b; }
+  if(c){ c.disabled=b || !_wifiSel; c.textContent=b?'Connecting…':'Connect'; } if(r) r.disabled=b; }
 function connectCtrl(){
   ctrl=new WebSocket(ctrlURL());
   // On (re)connect the server re-sends the full snapshot (devices/services/faults/stats), so the
