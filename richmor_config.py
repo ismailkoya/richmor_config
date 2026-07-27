@@ -1083,21 +1083,32 @@ async def _win_connect_one(ssid, password, label, authn="WPA2PSK", encn="AES"):
                 os.remove(path)
             except OSError:
                 pass
-    rc, out = await _run("netsh", "wlan", "connect", "name=" + label, "ssid=" + label, timeout=20)
+    # NOTE: do NOT pass ssid= here. netsh matches ssid= against the profile's DECODED <hex>,
+    # so when the real SSID has a trailing space, ssid=<trimmed label> fails with
+    # 'SSID "X" does not exist in profile "X"'. name= alone connects using the profile's own
+    # (single) SSID — the exact bytes we put in <hex>.
+    rc, out = await _run("netsh", "wlan", "connect", "name=" + label, timeout=20)
     log.info("WiFi(win): connect name=%r rc=%s -> %s", label, rc, " | ".join(out.split()) or "(no output)")
     if rc != 0:
         return False, (out.strip().splitlines() or ["connect command failed"])[-1]
+    saw_auth = False
     for i in range(12):                                      # netsh returns instantly; wait for association
         await asyncio.sleep(1)
         st, cur = await _win_iface_state()
         log.info("WiFi(win): poll %2d/12 state=%r ssid=%r", i + 1, st, cur)
-        if cur.strip() == ssid.strip() and st.lower() == "connected":
+        sl = st.lower()
+        if "authenticat" in sl:
+            saw_auth = True
+        if cur.strip() == ssid.strip() and sl == "connected":
             log.info("WiFi(win): associated to %r", ssid)
             return True, "connected"
     st, cur = await _win_iface_state()
-    reason = ("wrong password (auth rejected)" if st.lower() in ("authenticating", "disconnected")
-              else "could not associate — check the password")
-    log.info("WiFi(win): gave up ssid=%r final state=%r cur=%r -> %s", ssid, st, cur, reason)
+    # only blame the password if we actually reached the auth phase; a straight
+    # associating->disconnected with the SSID never appearing means the profile's SSID
+    # isn't on the air (wrong hex spelling) — not a bad key.
+    reason = ("wrong password (auth rejected)" if saw_auth
+              else "could not associate — network not found or out of range")
+    log.info("WiFi(win): gave up ssid=%r final state=%r cur=%r saw_auth=%s -> %s", ssid, st, cur, saw_auth, reason)
     return False, reason
 
 
