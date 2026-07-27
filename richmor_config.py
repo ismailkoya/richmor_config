@@ -962,6 +962,21 @@ async def _win_current_ssid():
     return ""
 
 
+async def _win_iface_state():
+    """(state, ssid) from `netsh wlan show interfaces`. state is the adapter's association
+    phase — 'connected' / 'authenticating' / 'connecting' / 'disconnected' — which is how we
+    tell a wrong password (stalls at authenticating -> disconnected) from an SSID mismatch."""
+    rc, out = await _run("netsh", "wlan", "show", "interfaces", timeout=10)
+    state, ssid = "", ""
+    for line in out.splitlines():
+        k = line.split(":", 1)[0].strip().lower()
+        if k == "state":
+            state = _netsh_val(line).strip()
+        elif k == "ssid":                                    # exact 'SSID', not 'BSSID'
+            ssid = _netsh_val(line)
+    return state, ssid
+
+
 async def _win_scan():
     rc, out = await _run("netsh", "wlan", "show", "networks", "mode=bssid", timeout=20)
     seen, cur = {}, None
@@ -977,13 +992,19 @@ async def _win_scan():
                 s = int(m.group(1))
                 if s > seen[cur]["signal"]:
                     seen[cur]["signal"] = s
-    return sorted((v for v in seen.values() if v["ssid"]), key=lambda x: -x["signal"])
+    nets = sorted((v for v in seen.values() if v["ssid"]), key=lambda x: -x["signal"])
+    log.info("WiFi(win): scan -> %s", ", ".join("%r@%d%%" % (n["ssid"], n["signal"]) for n in nets) or "(none)")
+    return nets
 
 
-def _win_profile_xml(ssid, password):
+def _win_profile_xml(ssid, password, label=None):
+    """`label` = the profile NAME that `add`/`connect` match on. Windows trims trailing
+    whitespace when it stores the name, so pass a TRIMMED label. `ssid` = the exact bytes
+    to match the radio (may keep a trailing space). Decoupling them lets the profile name
+    match on connect AND the <hex> SSID hit the actual access point."""
     from xml.sax.saxutils import escape
-    name = escape(ssid)
-    hexssid = ssid.encode("utf-8").hex().upper()             # hex SSID -> exact match even with a trailing space
+    lbl = escape(label if label is not None else ssid)
+    hexssid = ssid.encode("utf-8").hex().upper()             # exact SSID bytes -> radio match
     if password:
         sec = ("<security><authEncryption><authentication>WPA2PSK</authentication>"
                "<encryption>AES</encryption><useOneX>false</useOneX></authEncryption>"
@@ -994,22 +1015,26 @@ def _win_profile_xml(ssid, password):
                "<encryption>none</encryption><useOneX>false</useOneX></authEncryption></security>")
     return ('<?xml version="1.0"?>\n'
             '<WLANProfile xmlns="http://www.microsoft.com/networking/WLAN/profile/v1">'
-            f'<name>{name}</name>'
-            f'<SSIDConfig><SSID><hex>{hexssid}</hex><name>{name}</name></SSID></SSIDConfig>'
+            f'<name>{lbl}</name>'
+            f'<SSIDConfig><SSID><hex>{hexssid}</hex><name>{lbl}</name></SSID></SSIDConfig>'
             '<connectionType>ESS</connectionType><connectionMode>manual</connectionMode>'
             f'<MSM>{sec}</MSM></WLANProfile>')
 
 
-async def _win_connect_one(ssid, password):
-    """One add-profile + connect attempt. The profile <name>, the <hex> SSID and the
-    connect name= all use the SAME spelling, so Windows' (trimmed) profile lookup matches."""
+async def _win_connect_one(ssid, password, label):
+    """One add-profile + connect attempt. The profile NAME (add + connect) is `label`
+    (trimmed, so Windows' trimmed lookup matches); the radio is matched by the exact
+    `ssid` bytes in the <hex> SSID."""
+    hexssid = ssid.encode("utf-8").hex().upper()
+    log.info("WiFi(win): attempt ssid=%r hex=%s name=%r pw_len=%d", ssid, hexssid, label, len(password or ""))
     path = None
     try:
         fd, path = tempfile.mkstemp(suffix=".xml", prefix="rmdvr_")
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            f.write(_win_profile_xml(ssid, password))
+            f.write(_win_profile_xml(ssid, password, label))
         rc, out = await _run("netsh", "wlan", "add", "profile",
                              "filename=" + path, "user=current", timeout=15)
+        log.info("WiFi(win): add profile rc=%s -> %s", rc, " | ".join(out.split()) or "(no output)")
         if rc != 0:
             return False, (out.strip().splitlines() or ["could not add WiFi profile"])[-1]
     finally:
@@ -1018,30 +1043,44 @@ async def _win_connect_one(ssid, password):
                 os.remove(path)
             except OSError:
                 pass
-    rc, out = await _run("netsh", "wlan", "connect", "name=" + ssid, "ssid=" + ssid, timeout=20)
+    rc, out = await _run("netsh", "wlan", "connect", "name=" + label, "ssid=" + label, timeout=20)
+    log.info("WiFi(win): connect name=%r rc=%s -> %s", label, rc, " | ".join(out.split()) or "(no output)")
     if rc != 0:
         return False, (out.strip().splitlines() or ["connect command failed"])[-1]
-    for _ in range(12):                                      # netsh returns instantly; wait for association
+    for i in range(12):                                      # netsh returns instantly; wait for association
         await asyncio.sleep(1)
-        if (await _win_current_ssid()).strip() == ssid.strip():
+        st, cur = await _win_iface_state()
+        log.info("WiFi(win): poll %2d/12 state=%r ssid=%r", i + 1, st, cur)
+        if cur.strip() == ssid.strip() and st.lower() == "connected":
+            log.info("WiFi(win): associated to %r", ssid)
             return True, "connected"
-    return False, "could not associate — check the password"
+    st, cur = await _win_iface_state()
+    reason = ("wrong password (auth rejected)" if st.lower() in ("authenticating", "disconnected")
+              else "could not associate — check the password")
+    log.info("WiFi(win): gave up ssid=%r final state=%r cur=%r -> %s", ssid, st, cur, reason)
+    return False, reason
 
 
 async def _win_connect(ssid, password):
-    # netsh is a TWO-step flow: `add profile` (Windows stores it under a name with trailing
-    # whitespace TRIMMED) then `connect name=<profile>` (looked up WITHOUT trimming) — so a
-    # scanned SSID carrying a trailing space fails with `no profile "X " assigned`. The radio
-    # itself is matched by the <hex> SSID. Linux's nmcli connects in ONE step so it never hits
-    # this. Be robust either way: try the SSID exactly as scanned, then retry trimmed.
-    cands = [ssid]
-    if ssid.rstrip() != ssid:
-        cands.append(ssid.rstrip())
+    # netsh two-step: `add profile` (Windows stores the name with trailing whitespace TRIMMED)
+    # then `connect name=<profile>` (looked up UNTRIMMED); the radio is matched by the <hex>
+    # SSID. So use a TRIMMED label for the profile name (add + connect always agree), and try
+    # the SSID hex BOTH with and without a trailing space — we can't tell whether netsh's scan
+    # reported a real trailing space or added a spurious one, and one of the two will match the
+    # real AP. Linux's nmcli connects in one step (SSID+password), so it never hits any of this.
+    label = ssid.rstrip() or ssid
+    radios, seen = [], set()
+    for r in (ssid, ssid.rstrip()):
+        if r not in seen:
+            seen.add(r)
+            radios.append(r)
+    log.info("WiFi(win): connect plan label=%r radios=%r", label, radios)
     ok, msg = False, "connect failed"
-    for c in cands:
-        ok, msg = await _win_connect_one(c, password)
+    for r in radios:
+        ok, msg = await _win_connect_one(r, password, label)
         if ok:
             return True, msg
+        log.info("WiFi(win): candidate %r failed: %s", r, msg)
     return ok, msg
 
 
