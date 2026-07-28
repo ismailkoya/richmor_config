@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<!-- This app has its own 5-language switch; block the browser's auto-translate so it
+     doesn't rewrite the Material Symbols icon ligatures (folder_open -> ouvrir_dossier)
+     and turn every icon into a word. -->
+<meta http-equiv="Content-Language" content="en">
 <script>
 /* Report front-end JS errors to the server log (the packaged window has no console). Registered first,
    in its own block, so it also catches parse/runtime errors in the scripts that follow. Kept ES5-plain. */
@@ -1758,7 +1763,10 @@ function _clearReconnTimer(){ if(_reconnTimer){ clearTimeout(_reconnTimer); _rec
 // "Reconnecting…" chip; only fall back to the hard overlay if it's still down after a grace window. Never reload.
 function cfgDecideOverlay(){
   if(window._mdvrUp){ hidePicker(); hideDevClosed(); hideReconnecting(); return; }   // reachable -> clear all
-  if(_wifiState && !_wifiState.on_target){                // off the recorder's AP -> real WiFi issue, pick now
+  if(_wifiState && !_wifiState.on_target){                // off the recorder's AP
+    if(_wifiState.retrying){                              // server is silently re-joining -> chip, not picker
+      _clearReconnTimer(); hidePicker(); hideDevClosed(); showReconnecting(); return;
+    }
     _clearReconnTimer(); hideDevClosed(); hideReconnecting(); showPicker(); return;
   }
   if(_reconnTimer){ hidePicker(); hideDevClosed(); showReconnecting(); return; }     // on AP, within grace -> chip only
@@ -2157,7 +2165,7 @@ function updateCaptureBtn(){ /* Capture Photos button removed — snapshot is pe
 function clearPhoto(i){ if(photoTimers[i]){ clearTimeout(photoTimers[i]); delete photoTimers[i]; }
   const img=document.getElementById('photo'+i); if(img){ img.style.display='none'; img.removeAttribute('src'); }
   const idle=document.getElementById('idle'+i); if(idle && !cells[i]) idle.style.display='flex';
-  const n=document.getElementById('note'+i); if(n && n.textContent===t('live.capturing')) n.textContent=''; }
+  const n=document.getElementById('note'+i); if(n && n.dataset.cap==='1'){ n.textContent=''; delete n.dataset.cap; } }
 function captureAll(){
   if(!activeDevice){ toast(t('live.select'),true); return; }
   const idle=[];
@@ -2168,7 +2176,7 @@ function onPhoto(m){ const ch=(m.channel|0); let i=-1;
   for(let k=0;k<lsVisible();k++){ if(lsCellCh[k]===ch && !cells[k]){ i=k; break; } }   // cell showing this channel
   if(i<0) return;
   clearTimeout(photoTimers[i]); delete photoTimers[i];
-  document.getElementById('note'+i).textContent='';
+  const nn=document.getElementById('note'+i); nn.textContent=''; delete nn.dataset.cap;
   const img=document.getElementById('photo'+i); img.src='data:image/jpeg;base64,'+m.jpeg; img.style.display='block';
   document.getElementById('idle'+i).style.display='none'; }
 
@@ -2250,11 +2258,11 @@ function captureChannels(idxs){
   idxs.forEach(i=>{ if(cells[i] || lsIsDup(i)) return;   // playing or duplicate channel -> skip
     channels.push(lsCellCh[i]);
     const img=document.getElementById('photo'+i); img.style.display='none'; img.removeAttribute('src');
-    document.getElementById('note'+i).textContent=t('live.capturing');
+    const cn=document.getElementById('note'+i); cn.textContent=t('live.capturing'); cn.dataset.cap='1';
     document.getElementById('idle'+i).style.display='none';
     clearTimeout(photoTimers[i]);
     photoTimers[i]=setTimeout(()=>{ const n=document.getElementById('note'+i);
-      if(n.textContent===t('live.capturing')){ n.textContent=t('live.nophoto');
+      if(n.dataset.cap==='1'){ n.textContent=t('live.nophoto'); delete n.dataset.cap;
         const idle=document.getElementById('idle'+i); if(idle && !cells[i]) idle.style.display='flex'; }
       delete photoTimers[i]; }, 15000);
   });

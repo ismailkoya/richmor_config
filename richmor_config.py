@@ -760,9 +760,22 @@ async def _route(msgid: int, serial: int, body: bytes):
 #   * Linux    -> nmcli       (works in a desktop session; if the session policy refuses, we fall
 #                              back to a standard graphical auth prompt via pkexec — no file edits)
 _wifi_cur = ""            # last-known joined SSID ("" = not on any WiFi)
+_wifi_last = None         # {"ssid","password"} of the last SUCCESSFUL join — for silent auto-reconnect
+_wifi_user_off = False    # user hit "Reconnect WiFi"/disconnect on purpose — don't rejoin behind their back
+_wifi_reconnecting = False# a silent auto-reconnect is in flight -> browser shows the chip, not the picker
+_wifi_lock = None         # serialize netsh connect ops (user Connect vs auto-reconnect); created lazily
+
+
+def _wifi_mark_user_off():
+    global _wifi_user_off
+    _wifi_user_off = True
 
 
 _NO_WINDOW = 0x08000000 if _IS_WIN else 0   # subprocess.CREATE_NO_WINDOW — hide the console
+# Force English/C output from every child tool so we NEVER parse a localized string. nmcli,
+# networksetup, iwgetid, etc. honour this. (Windows netsh ignores it — its output follows the
+# Windows display language — so netsh is parsed by language-invariant tokens instead; see _win_scan.)
+_C_ENV = {"LC_ALL": "C", "LANG": "C", "LC_MESSAGES": "C"}
 
 
 async def _run(*args, timeout=25):
@@ -773,9 +786,11 @@ async def _run(*args, timeout=25):
     monitor polls `netsh wlan show interfaces` on a timer, so that flash appears
     every few seconds. CREATE_NO_WINDOW suppresses it."""
     try:
+        env = os.environ.copy()
+        env.update(_C_ENV)
         p = await asyncio.create_subprocess_exec(
             *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
-            creationflags=_NO_WINDOW)
+            creationflags=_NO_WINDOW, env=env)
         out, _ = await asyncio.wait_for(p.communicate(), timeout=timeout)
         return p.returncode, (out or b"").decode("utf-8", "ignore")
     except Exception as e:
@@ -793,14 +808,57 @@ async def _wifi_scan():
 
 
 async def _wifi_do_connect(ssid, password):
-    ok, msg = await (_win_connect(ssid, password) if _IS_WIN
-                     else _mac_connect(ssid, password) if _IS_MAC
-                     else _nix_connect(ssid, password))
+    global _wifi_last, _wifi_user_off, _wifi_lock
+    if _wifi_lock is None:
+        _wifi_lock = asyncio.Lock()
+    async with _wifi_lock:                          # serialize: user Connect vs silent auto-reconnect
+        ok, msg = await (_win_connect(ssid, password) if _IS_WIN
+                         else _mac_connect(ssid, password) if _IS_MAC
+                         else _nix_connect(ssid, password))
     if ok:
+        _wifi_last = {"ssid": ssid, "password": password}   # remember for silent re-join on an unexpected drop
+        _wifi_user_off = False
         log.info("WiFi: joined %r", ssid)
     else:
         log.warning("WiFi: connect %r failed: %s", ssid, msg)
     return ok, msg
+
+
+async def _wifi_autoreconnect():
+    """Unexpected drop off the recorder AP -> silently rejoin with the last good credentials,
+    up to 3 tries with a gap. While running, the 'wifi' state carries retrying=True so the
+    browser shows the subtle 'Reconnecting…' chip instead of throwing the picker in the user's
+    face. Only if all tries fail does the normal off-target state surface the picker."""
+    global _wifi_reconnecting, _wifi_cur
+    if not _wifi_last or _wifi_user_off:
+        _wifi_reconnecting = False
+        return
+    tgt = _wifi_last["ssid"]
+    log.info("WiFi: unexpected drop off %r — silent auto-reconnect", tgt)
+    try:
+        for attempt in range(1, 4):
+            if _wifi_user_off:
+                break
+            cur0 = await _current_ssid()
+            if cur0.strip() == tgt.strip():                        # OS already put us back on target -> done
+                _wifi_cur = cur0
+                return
+            if cur0.strip():                                       # on a DIFFERENT network now (user/OS chose it)
+                log.info("WiFi: now on %r — abandoning auto-reconnect to %r", cur0, tgt)
+                break                                              # don't yank them off it
+            await _broadcast(_wifi_state_msg())                     # retrying=True -> chip
+            ok, msg = await _wifi_do_connect(tgt, _wifi_last["password"])
+            cur = await _current_ssid()
+            if cur.strip() == tgt.strip():
+                _wifi_cur = cur
+                log.info("WiFi: auto-reconnect ok (attempt %d)", attempt)
+                return
+            log.info("WiFi: auto-reconnect attempt %d failed: %s", attempt, msg)
+            await asyncio.sleep(5)                                   # gap so the AP can come back
+    finally:
+        _wifi_reconnecting = False
+        _wifi_cur = await _current_ssid()
+        await _broadcast(_wifi_state_msg())                         # success clears the chip; failure -> picker
 
 
 async def _wifi_disconnect():
@@ -963,50 +1021,68 @@ async def _win_current_ssid():
 
 
 async def _win_iface_state():
-    """(state, ssid) from `netsh wlan show interfaces`. state is the adapter's association
-    phase — 'connected' / 'authenticating' / 'connecting' / 'disconnected' — which is how we
-    tell a wrong password (stalls at authenticating -> disconnected) from an SSID mismatch."""
+    """(state, ssid) from `netsh wlan show interfaces` — LOCALE-PROOF. The 'State' line value is
+    localized (English 'connected' / French 'connecté'), so we never read it. We derive the
+    state from the SSID line instead ('SSID' is an invariant acronym in every Windows language):
+    an SSID present means we're associated to it."""
     rc, out = await _run("netsh", "wlan", "show", "interfaces", timeout=10)
-    state, ssid = "", ""
+    ssid = ""
     for line in out.splitlines():
-        k = line.split(":", 1)[0].strip().lower()
-        if k == "state":
-            state = _netsh_val(line).strip()
-        elif k == "ssid":                                    # exact 'SSID', not 'BSSID'
+        k = line.split(":", 1)[0].strip()
+        if k == "SSID":                                      # exact 'SSID' (invariant); not 'BSSID'
             ssid = _netsh_val(line)
+    state = "associated" if ssid.strip() else "disconnected"
     return state, ssid
 
 
-_win_sec = {}    # ssid -> (authentication, encryption) exactly as netsh reports them
+_win_sec = {}    # ssid -> (authentication, encryption) as WLAN-PROFILE values, derived from
+                 # language-invariant cipher tokens — never from localized netsh words
+
+
+def _sec_from_tokens(block):
+    """(authentication, encryption, secure) for a WLAN profile, from language-invariant tokens
+    anywhere in a netsh SSID block. netsh localizes the LABELS ('Authentication' ->
+    'Authentification') and the open/none WORDS, but the protocol tokens WPA / WPA2 / WEP / RSN /
+    CCMP / TKIP / AES are standard names identical in every Windows language."""
+    t = (block or "").upper()
+    has_wpa2 = ("WPA2" in t) or ("RSN" in t)
+    has_wpa = "WPA" in t
+    has_wep = "WEP" in t
+    if not (has_wpa or has_wep):
+        return "open", "none", False                         # no cipher tokens -> open network
+    authn = "WPA2PSK" if has_wpa2 else ("WPAPSK" if has_wpa else "WPA2PSK")
+    encn = "TKIP" if "TKIP" in t else "AES"                  # CCMP/AES -> AES
+    return authn, encn, True
 
 
 async def _win_scan():
     rc, out = await _run("netsh", "wlan", "show", "networks", "mode=bssid", timeout=20)
-    seen, cur = {}, None
+    seen, order, cur = {}, [], None
     for line in out.splitlines():
         key = line.split(":", 1)[0].strip()
-        kl = key.lower()
-        if re.match(r"SSID\s+\d+$", key):                    # "SSID 1", "SSID 2", ...  (block start)
+        if re.match(r"SSID\s+\d+$", key):                    # "SSID 1", "SSID 2", ...  (block start; label is invariant)
             cur = _netsh_val(line)                           # keep exact spelling incl. trailing space
             if cur and cur not in seen:
-                seen[cur] = {"ssid": cur, "signal": 0, "secure": True, "auth": "", "enc": ""}
+                seen[cur] = {"ssid": cur, "signal": 0, "secure": True, "_blk": ""}
+                order.append(cur)
         elif cur:
-            if kl == "authentication" and not seen[cur]["auth"]:      # AP-advertised security
-                seen[cur]["auth"] = _netsh_val(line).strip()
-                seen[cur]["secure"] = "open" not in seen[cur]["auth"].lower()
-            elif kl == "encryption" and not seen[cur]["enc"]:
-                seen[cur]["enc"] = _netsh_val(line).strip()
-            else:
-                m = re.search(r"(\d{1,3})\s*%", line)        # "Signal : 92%"  (label may be localized -> match the %)
-                if m:
-                    s = int(m.group(1))
-                    if s > seen[cur]["signal"]:
-                        seen[cur]["signal"] = s
-    nets = sorted((v for v in seen.values() if v["ssid"]), key=lambda x: -x["signal"])
-    for n in nets:
-        _win_sec[n["ssid"]] = (n.get("auth", ""), n.get("enc", ""))
+            m = re.search(r"(\d{1,3})\s*%", line)            # signal % (label may be localized -> match the %)
+            if m:
+                s = int(m.group(1))
+                if s > seen[cur]["signal"]:
+                    seen[cur]["signal"] = s
+            seen[cur]["_blk"] += " " + line                  # collect block text for the token scan
+    nets = []
+    for ss in order:
+        d = seen[ss]
+        authn, encn, secure = _sec_from_tokens(d.pop("_blk", ""))
+        d["secure"] = secure
+        _win_sec[ss] = (authn, encn)                         # profile-ready pair; no localized words stored
+        nets.append(d)
+    nets.sort(key=lambda x: -x["signal"])
     log.info("WiFi(win): scan -> %s", ", ".join(
-        "%r@%d%% [%s/%s]" % (n["ssid"], n["signal"], n.get("auth", ""), n.get("enc", "")) for n in nets) or "(none)")
+        "%r@%d%% [%s/%s]" % (n["ssid"], n["signal"], _win_sec[n["ssid"]][0], _win_sec[n["ssid"]][1])
+        for n in nets) or "(none)")
     return nets
 
 
@@ -1017,19 +1093,14 @@ def _win_sec_variants(ssid, password):
     AP is (say) WPA2/TKIP our old AES-only profile silently fails to associate."""
     if not password:
         return [("open", "none")]
-    auth = enc = ""
+    pair = None
     for k in (ssid, ssid.rstrip(), ssid.strip()):
         if k in _win_sec:
-            auth, enc = _win_sec[k]
+            pair = _win_sec[k]                                # already a profile-ready (authn, encn)
             break
-    a, e = auth.lower(), enc.lower()
-    if a and "open" in a:
-        return [("open", "none")]
     out = []
-    if a or e:                                                # the AP's own advertised pair first
-        authn = "WPAPSK" if ("wpa" in a and "wpa2" not in a) else "WPA2PSK"
-        encn = "TKIP" if "tkip" in e else "AES"
-        out.append((authn, encn))
+    if pair and pair[0] != "open":                            # the AP's advertised pair first
+        out.append(pair)
     for v in (("WPA2PSK", "AES"), ("WPA2PSK", "TKIP"), ("WPAPSK", "TKIP")):
         if v not in out:
             out.append(v)
@@ -1091,25 +1162,20 @@ async def _win_connect_one(ssid, password, label, authn="WPA2PSK", encn="AES"):
     log.info("WiFi(win): connect name=%r rc=%s -> %s", label, rc, " | ".join(out.split()) or "(no output)")
     if rc != 0:
         return False, (out.strip().splitlines() or ["connect command failed"])[-1]
-    saw_auth = False
     for i in range(12):                                      # netsh returns instantly; wait for association
         await asyncio.sleep(1)
         st, cur = await _win_iface_state()
         log.info("WiFi(win): poll %2d/12 state=%r ssid=%r", i + 1, st, cur)
-        sl = st.lower()
-        if "authenticat" in sl:
-            saw_auth = True
-        if cur.strip() == ssid.strip() and sl == "connected":
+        # SSID match is the LOCALE-PROOF success signal — netsh reports the joined SSID only
+        # once associated, and the SSID label is the same in every Windows language. Do NOT
+        # gate on state=='connected': the State line is localized (French 'État : connecté',
+        # etc.), so gating on it made non-English Windows loop forever on a working connection.
+        if cur.strip() == ssid.strip():
             log.info("WiFi(win): associated to %r", ssid)
             return True, "connected"
     st, cur = await _win_iface_state()
-    # only blame the password if we actually reached the auth phase; a straight
-    # associating->disconnected with the SSID never appearing means the profile's SSID
-    # isn't on the air (wrong hex spelling) — not a bad key.
-    reason = ("wrong password (auth rejected)" if saw_auth
-              else "could not associate — network not found or out of range")
-    log.info("WiFi(win): gave up ssid=%r final state=%r cur=%r saw_auth=%s -> %s", ssid, st, cur, saw_auth, reason)
-    return False, reason
+    log.info("WiFi(win): gave up ssid=%r final state=%r cur=%r", ssid, st, cur)
+    return False, "could not associate — network not found or out of range"
 
 
 async def _win_connect(ssid, password):
@@ -1144,23 +1210,41 @@ async def _win_disconnect():
     return rc == 0, (out.strip().splitlines() or [""])[-1]
 
 
+def _wifi_target():
+    # once we've joined the recorder, trust the SSID we actually connected to (handles a
+    # renamed AP or a trailing-space mismatch); before that, the configured default.
+    return (_wifi_last or {}).get("ssid") or WIFI_SSID
+
+
 def _wifi_state_msg():
-    on_target = _wifi_cur.strip() == WIFI_SSID.strip()
+    tgt = _wifi_target()
+    on_target = bool(_wifi_cur) and _wifi_cur.strip() == tgt.strip()
     return {"type": "wifi", "connected": bool(_wifi_cur), "ssid": _wifi_cur,
-            "on_target": on_target, "target": WIFI_SSID}
+            "on_target": on_target, "target": tgt, "retrying": _wifi_reconnecting}
 
 
 async def _wifi_monitor():
-    """Poll the joined SSID and push state to the browser on change. Read-only; never auto-joins."""
-    global _wifi_cur
+    """Poll the joined SSID, push state on change, and silently auto-reconnect an unexpected
+    drop off the recorder AP (chip, not picker). Never auto-joins something we didn't pick."""
+    global _wifi_cur, _wifi_reconnecting
     if not WIFI_MANAGE:
         return
+    was_on = False
     while True:
         cur = await _current_ssid()
+        tgt = _wifi_target()
+        on_now = bool(cur) and cur.strip() == tgt.strip()
         if cur != _wifi_cur:
             _wifi_cur = cur
             log.info("WiFi: now on %r", cur or "(none)")
             await _broadcast(_wifi_state_msg())
+        # Was on the recorder AP, now dropped to NO network — rejoin quietly. Only when cur is
+        # empty: if the user (or Windows) deliberately joined a DIFFERENT named network, don't
+        # yank them back to the recorder. And never fight an explicit user disconnect.
+        if was_on and not on_now and not cur and not _wifi_reconnecting and _wifi_last and not _wifi_user_off:
+            _wifi_reconnecting = True                      # set here (sync) so we never double-launch
+            asyncio.create_task(_wifi_autoreconnect())
+        was_on = on_now
         await asyncio.sleep(4)
 
 
@@ -1431,6 +1515,7 @@ async def _handle_ws_cmd(ws, data):
         await ws.send_str(json.dumps({"type": "wifi_connect_result", "ok": ok, "msg": msg, "ssid": ssid}))
         return
     if a == "wifi_disconnect":                     # "Reconnect WiFi" -> drop the link, browser reopens the picker
+        _wifi_mark_user_off()                       # user's choice -> don't silently auto-rejoin behind them
         ok, msg = await _wifi_disconnect()
         _wifi_cur = await _current_ssid()
         await _broadcast(_wifi_state_msg())
