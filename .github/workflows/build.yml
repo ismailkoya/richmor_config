@@ -13,11 +13,11 @@ jobs:
         include:
           - os: windows-latest
             arch: x64
-            out:  RichmorConfig-win64.exe
+            out:  RichmorConfig-win64.zip     # unzip -> run RichmorConfig.exe (zip dodges the browser .exe download block)
             tag:  win64
           - os: windows-latest
             arch: x86
-            out:  RichmorConfig-win32.exe
+            out:  RichmorConfig-win32.zip
             tag:  win32
           - os: ubuntu-latest
             arch: x64
@@ -66,10 +66,12 @@ jobs:
         run: pyinstaller richmor_config_app.spec --clean --noconfirm
 
       # ── package per OS so end users just double-click (no chmod, no terminal) ──
-      - name: Package Windows (.exe)
+      - name: Package Windows (.zip)
         if: runner.os == 'Windows'
-        shell: bash
-        run: mv dist/RichmorConfig.exe "dist/${{ matrix.out }}"
+        shell: pwsh
+        run: |
+          Set-Content dist/HOW-TO-RUN.txt "First run: if Windows shows 'Windows protected your PC', click 'More info' then 'Run anyway'."
+          Compress-Archive -Path dist/RichmorConfig.exe,dist/HOW-TO-RUN.txt -DestinationPath "dist/${{ matrix.out }}" -Force
 
       - name: Package macOS (.app -> .zip)
         if: runner.os == 'macOS'
